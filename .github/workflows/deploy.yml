@@ -16,7 +16,7 @@ jobs:
       with:
         repository: ${{ github.repository }}/hugo
         username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
         tags: latest,${{ github.sha }}
     

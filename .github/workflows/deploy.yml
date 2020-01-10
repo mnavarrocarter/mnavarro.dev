@@ -25,4 +25,4 @@ jobs:
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
       with:
-        args: set image --record deployment/blog container=${{ github.repository }}:${{ github.sha }}
+        args: set image --record deployment/blog blog=${{ github.repository }}:${{ github.sha }}

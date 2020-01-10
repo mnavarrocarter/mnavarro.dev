@@ -1,5 +1,12 @@
-FROM klakegg/hugo:0.62.2-onbuild AS hugo
+FROM alpine:latest AS builder
+
+RUN apk add --no-cache hugo
+
+COPY . /hugo
+WORKDIR /hugo
+
+RUN hugo -D
 
 FROM nginx:alpine
 RUN rm /usr/share/nginx/html/index.html
-COPY --from=hugo /onbuild /usr/share/nginx/html
+COPY --from=builder /hugo/public /usr/share/nginx/html

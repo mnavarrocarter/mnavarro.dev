@@ -14,6 +14,8 @@ jobs:
     
     - name: Checkout Code
       uses: actions/checkout@master
+      with:
+        submodules: true
     
     - name: Login docker
       env:

@@ -16,6 +16,7 @@ WORKDIR /site
 
 # And then we just run Hugo
 RUN /hugo --minify --enableGitInfo
+RUN ls /site/public
 
 # stage 2
 FROM nginx:1.15-alpine

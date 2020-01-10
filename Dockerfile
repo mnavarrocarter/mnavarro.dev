@@ -1,12 +1,10 @@
-FROM alpine:latest AS builder
+FROM alpine:latest
 
 RUN apk add --no-cache hugo
 
 COPY . /hugo
 WORKDIR /hugo
 
-RUN hugo -D
+EXPOSE 80
 
-FROM nginx:alpine
-RUN rm /usr/share/nginx/html/index.html
-COPY --from=builder /hugo/public /usr/share/nginx/html
+CMD hugo serve -p 80 --bind 0.0.0.0 -b https://mnavarro.dev

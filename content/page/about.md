@@ -2,6 +2,7 @@
 title: "About Me"
 date: 2020-01-10T12:19:53-03:00
 draft: false
+url: /about
 ---
 
 I'm a Senior Backend Developer based in Chile, expert in PHP and skilled in Javascript (Node), and passionate about software development.

@@ -56,9 +56,7 @@ $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 
 Then you iterate over your resultset and you will get every record as it is found, keeping your memory usage very low at the cost of less speed and a bit more CPU.
 
-{{< notice tip >}}
 You can read more about non-buffered queries in PDO [here](https://phpdelusions.net/pdo#mysqlnd)
-{{< /notice >}}
 
 ## 3. Use PHP generators with abstractions
 Is of little use if you disable buffering your query to put every result into an array and continue with it. What you want here is the power of generators.

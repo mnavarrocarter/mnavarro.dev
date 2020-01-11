@@ -1,7 +1,7 @@
 baseURL = "https://mnavarro.dev/"
 languageCode = "en-us"
 title = "Matías Navarro Carter"
-theme = ["beautifulhugo", "hugo-notice"]
+theme = ["beautifulhugo"]
 metaDataFormat = "yaml"
 
 pygmentsStyle = "trac"
@@ -52,10 +52,10 @@ googleAnalytics = "UA-73118336-11"
 
 [[menu.main]]
     name = "About"
-    url = "page/about/"
+    url = "/about/"
     weight = 2
 
 [[menu.main]]
     name = "Media"
-    url = "page/media/"
+    url = "/media/"
     weight = 3

@@ -22,3 +22,5 @@ location ~* \.(?:css|js)$ {
   access_log off;
   add_header Cache-Control "public";
 }
+
+error_page 404 /404.html;

@@ -1,5 +1,5 @@
 ---
-title: "Talks & Workshops"
+title: "Media"
 date: 2020-01-10T16:50:09-03:00
 draft: false
 url: /media

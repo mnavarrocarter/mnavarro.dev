@@ -1,5 +1,6 @@
 ---
 title: Unit-testing the filesystem in PHP
+subtitle: Efficiently testing PHP's native filesystem functions without hitting a real filesystem
 draft: false
 date: 2019-12-16T11:18:48-03:00
 tags:
@@ -20,6 +21,7 @@ Well, it turns out not really. Actually, what if I told you that you can use PHP
 [`adlawson/vfs`][4] implements such filesystem, which is commonly called a *virtual filesystem*. They way you use it it's very similar to using a mock. You create the filesystem and leave it in the state you want for your tests. For example, here's a test from one of the Espresso packages where I use it:
 
 ```php
+<?php
 
 $templateEngineMock = $this->createMock(TemplateEngineInterface::class);
 $transformerMock = $this->createMock(TransformerInterface::class);

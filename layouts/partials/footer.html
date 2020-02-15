@@ -1,0 +1,18 @@
+  {{ if eq .Type "page" }}
+    {{ partial "page_meta.html" . }}
+  {{ end }}
+<footer>
+  <div class="wrapper">
+    {{ if and .Site.Params.Edit.repo .File.Path }}
+    <p class="small">Found a typo? <a href="{{ .Site.Params.Edit.repo }}/edit/{{ .Site.Params.Edit.branch }}/content/{{ .File.Path }}" target="_blank">Suggest a change.</a></p>
+    {{ end }}
+    <p class="small">Last Modified:
+      {{ if .Site.Params.since }}
+        {{ .Site.Params.since }} - {{ .Site.LastChange.Format .Site.Params.dateFormat }}
+      {{ else }}
+        {{ .Site.LastChange.Format .Site.Params.dateFormat }}
+      {{ end }}
+    </p>
+    <p class="muted slashed">{{ .Site.Params.footerText }}</p>
+  </div>
+</footer>

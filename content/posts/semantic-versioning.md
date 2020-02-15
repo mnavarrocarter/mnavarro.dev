@@ -1,5 +1,6 @@
 ---
 title: Entendiendo Versionamiento Semántico
+subtitle: O por qué 1.0 no significa que una librería es mala.
 tags: 
     - php
     - semver

@@ -1,0 +1,19 @@
+<header>
+  <div class="wrapper">
+      <p class="site-brand muted slashed terminal">
+        <a href="{{ "" | absLangURL }}">{{ .Site.Title }}</a>
+      </p>
+      <nav>
+          <ul>
+              {{ range .Site.Menus.main.ByWeight }}
+                <li>
+                  <a title="{{ .Name }}" href="{{ .URL  | relLangURL }}">{{ .Name }}</a>
+                </li>
+              {{ end }}
+              <li>
+                <a title="Atom Feed" href="/index.xml">Rss</a>
+              </li>
+          </ul>
+      </nav>
+  </div>
+</header>

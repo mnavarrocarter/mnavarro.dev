@@ -1,0 +1,7 @@
+<article>
+    <h1 class="post-title"><a href="{{ .Permalink }}">{{ .Title }}</a></h1>
+    {{ if .Params.subtitle }}
+        <p class="muted short"><i>{{ .Params.subtitle }}</i></p>
+    {{ end }}
+    <p class="small short">{{ .PublishDate.Format .Site.Params.dateFormat }}</p>
+</article>

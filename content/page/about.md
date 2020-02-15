@@ -5,7 +5,7 @@ draft: false
 url: /about
 ---
 
-I'm a Senior Backend Developer based in Chile, expert in PHP and skilled in Javascript (Node), and passionate about software development.
+I'm Matías Navarro Carter, a Backend Jedi Master based in Chile. The force is strong in me. I inhabit mainly in the PHP System (a few parsecs from Coruscant), but I often visit other systems like Node, Python, Go and Dart. 
 
 I have experience in all sort of projects, of different sizes and of wide spectrum of domains: medical, multimedia, air traveling and e-commerce. My style of development revolves around the ideas of Domain Driven Design. This means that when I develop software, I try to understand and breathe the business, in order to efectively model it into code. I mostly do web development, specially (truly) REST apis; but I also develop cli apps and tiny desktop apps with GUIs (Pyhton, Vala + GTK).
 

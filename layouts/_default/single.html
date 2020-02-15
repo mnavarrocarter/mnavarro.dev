@@ -1,0 +1,24 @@
+{{ define "main" }}
+<main>
+  <div class="wrapper">
+    <article>
+      <h1 class="post-title">{{ .Page.Title }}</h1>
+      <p class="small">{{ .PublishDate.Format .Site.Params.dateFormat }}</p>
+      <div class="content">
+        {{ .Content }}
+      </div>
+      {{ if .Params.tags }}
+      <div class="post-terms">
+        <p class="small">
+          Taggged
+          {{ range.Params.tags }}
+          <a href="{{ $.Site.LanguagePrefix | absURL }}/tags/{{ . | urlize }}/">{{ . }}</a>,
+          {{ end }}
+        </p>
+      </div>
+      {{ end }}
+      {{ partial "post-navigation.html" .}}
+    </article>
+  </div>
+</main>
+{{ end }}

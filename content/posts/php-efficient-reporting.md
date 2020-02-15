@@ -1,5 +1,6 @@
 ---
 title: Efficient Reports in PHP
+subtitle: Leverage the power of unbuffered TCP connections and PHP Generators to do reporting well
 draft: false
 date: 2019-12-10T11:18:48-03:00
 tags:
@@ -33,6 +34,8 @@ Even when you can get around the memory issue, you still are putting your system
 This is really all you need.
 
 ```php
+<?php
+
 interface UserReporter
 {
     public function activeUsers(): iterable;
@@ -51,6 +54,8 @@ Now, depending of the size of your table, this may also kill your application. I
 Reports like this can easily kill your app if you are not cautious. In cases like this, is always good to buffer the results as they happen over the TCP connection. In PDO, you can do this by disabling buffering in queries:
 
 ```php
+<?php
+
 $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 ```
 
@@ -66,6 +71,8 @@ I'm not going to explain in detail what they are. For that you can read [the ama
 They fit very well our case for the non-buffered queries in PDO, because we do not know the whole resultset in advance, so we can yield values as they reach our server.
 
 ```php
+<?php
+
 class UserReporter {
 
     private PDO $pdo;
@@ -92,6 +99,8 @@ When a function has the yield keyword inside it, their return value will be an `
 This is a powerful feature, useful to implement streams, data transformation pipelines and even coroutines (as Nikita's blog post shows). You can compose iterables over iterables to create cool pipelines and process your report data separating concerns effectively.
 
 ```php
+<?php
+
 class UppercaseNames implements IteratorAggregate
 {
     private iterable $iterable;
@@ -155,7 +164,7 @@ foreach ($pipeline as $item) {
 
 Who needs ETL processing libraries when you have the power of Generators at your disposal? 🤓️
 
-![OMG! Generators are soo cool!](https://media.giphy.com/media/11ahZZugJHrdLO/giphy-downsized.gif)
+{{< figure src="https://media.giphy.com/media/11ahZZugJHrdLO/giphy-downsized.gif" title="OMG generators are soo cool!" >}}
 
 ## 4. Prefer easy-to-stream content types
 One of the first things I ask when someone asks me to dump a report from a set of SQL tables is "Can the report be a CSV?", most of the time the answer is an annoying no, because is too complex for the business guy to import a csv file into excel (really?). But I try to make mi point anyways.

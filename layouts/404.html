@@ -1,0 +1,18 @@
+{{ define "header" }}<!-- No header on 404 pages -->{{ end }}
+{{ define "main" }}
+  <main>
+    <div class="wrapper">
+      <p id="emoji"></p>
+      <p class="muted slashed">Process exited with code 404</p>
+    </div>
+  </main>
+<script>
+  var errorEmojiContainer = document.getElementById('emoji')[0];
+  var emojiArray = [
+    '\\(o_o)/', '(o^^)o', '(˚Δ˚)b', '(^-^*)', '(≥o≤)', '(^_^)b', '(·_·)',
+    '(=\'X\'=)', '(>_<)', '(;-;)', '\\(^Д^)/',
+  ];
+  var errorEmoji = emojiArray[Math.floor(Math.random() * emojiArray.length)];
+  errorEmojiContainer.appendChild(document.createTextNode(errorEmoji));
+</script>
+{{ end }}

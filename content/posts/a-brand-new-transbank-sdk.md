@@ -1,5 +1,6 @@
 ---
-title: Un nuevo SDK de Transbank para PHP
+title: Un nuevo SDK de Transbank
+subtitle: Implementar Webpay en PHP acaba de volverse extremadamente fácil
 draft: false
 date: 2020-01-07T11:18:48-03:00
 tags:
@@ -17,7 +18,7 @@ Así que, sin más, les presento a...
 
 [¡BETTER TRANSBANK SDK!](https://github.com/better-transbank/sdk)
 
-![¡Bravo! ¡Por fin!](https://media.giphy.com/media/MOWPkhRAUbR7i/giphy.gif)
+{{< figure src="https://media.giphy.com/media/MOWPkhRAUbR7i/giphy-downsized.gif" title="¡Wohooo por fin!" >}}
 
 Este proyecto tiene como objetivo proveer un SDK estable, fácil de usar y seguro, con las mejores prácticas de desarrollo y POO y con un sistema de integración continua sólido y que asegure la calidad del software a cada momento.
 
@@ -50,6 +51,7 @@ Asi que, me puse manos a la obra.
 Decidí partir implementando Webpay para lograr un MVP. Haciendo a un lado todos los detalles de implementación, como SOAP, construcción de XML, firmado de XML y otras cosas, el webservice de transbank nos expone tres métodos para nuestro uso, que modelé en una interfaz.
 
 ```php
+<?php
 interface WebpayClient
 {
     public function startTransaction(Transaction $transaction): StartTransactionResponse;
@@ -67,6 +69,7 @@ Algo importante que debemos notar es que allí donde hay más de dos parámetros
 La clase `Transaction` es la principal aquí. Intenté modelarla tal y como el wsdl de transbank muestra, manteniendo los parámetros requeridos, opcionales y las estructuras. Parte de la api permite agregar detalles de pago, cambiar el tipo de transacción y provee un static factory para escritura de código fluída.
 
 ```php
+<?php
 use BetterTransbank\SDK\Webpay\Message\Transaction;
 
  // Creamos la transacción con las url
@@ -109,7 +112,7 @@ Un xml ya firmado, luce de esta forma:
                     <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                     <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
                     <ds:Reference URI="#pfxbaea1ea6-963f-4b71-aaae-e64d8605def3">
-                        <ds:Transforms>
+                        <ds:Transforms>s
                             <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                         </ds:Transforms>
                         <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
@@ -156,7 +159,7 @@ Un xml ya firmado, luce de esta forma:
 
 Fue bastante gratificante intelectualmente aprender a realizar el proceso. Incluso aprendí que Transbank no implementa el estándar al 100%, debido a que la información del certificado público suele enviarse en un header `wsse:BinarySecurityToken` y no en un `ds:KeyInfo`. Si Transbank implementa el estándar en sus herramientas de desarrollo, debería funcionar de esa forma también. Lo probaré en algún momento.
 
-![¡Soy hackerman!](https://media.giphy.com/media/26tPnAAJxXTvpLwJy/giphy-downsized.gif)
+{{< figure src="https://media.giphy.com/media/26tPnAAJxXTvpLwJy/giphy-downsized.gif" title="Soy un nerd consumado..." >}}
 
 ## Utilidades y extensibilidad
 
@@ -165,13 +168,16 @@ Luego de que el desarollo duro estuvo terminado, lo único que faltaba era desar
 Por ejemplo, para hacer las redirecciones especiales que requiere Webpay (formularios HTTP enviados programáticamente por medio de javascript), he desarrollado un par de clases utilitarias que permiten realizar este proceso de forma extremandamente sencilla. Debo, sin emabargo, dar crédito al SDK de Freshworks Studio por ser los primeros en implementar esta idea.
 
 ```php
+<?php
 $response = $webpay->startTransaction($transaction);
+
 PaymentForm::prepare($response)->send(); // Renderiza el formulario de pago y envía headers HTTP como respuesta
 ```
 
 Además, puedes conectarte a cualquier parte del proceso de pago usando una implementación de [`psr/event-dispatcher`](https://www.php-fig.org/psr/psr-14/) y el decorador especial del cliente de Webpay.
 
 ```php
+<?php
 use BetterTransbank\SDK\Webpay\SoapWebpayClient;
 use BetterTransbank\SDK\Webpay\Psr14\Psr14WebpayClient;
 
@@ -185,6 +191,7 @@ Por último, si necesitas ver información para debuggear requests, puedes usar 
 con capacidades de logger. Necesitarás una implementación que use la interfaz recomendada por FIG `LoggerInterface`, definida en [`psr/log`](https://github.com/php-fig/log). Casi todos los loggers para PHP usan esa interfaz hoy en día.
 
 ```php
+<?php
 use BetterTransbank\SDK\Soap\LoggerTransbankSoapClient;
 use BetterTransbank\SDK\Webpay\SoapWebpayClient;
 use BetterTransbank\SDK\Webpay\WebpayCredentials;

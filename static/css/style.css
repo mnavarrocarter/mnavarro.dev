@@ -35,7 +35,7 @@ html,body {
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: 'PT Mono', monospace;
-    font-size: 1.1rem;
+    font-size: 1rem;
     line-height: 1.7rem;
 }
 
@@ -85,7 +85,12 @@ header {
     justify-content: center;
 }
 
-code {
+li > code {
+    font-weight: bold;
+    color: var(--mute-color);
+}
+
+p > code {
     font-weight: bold;
     color: var(--mute-color);
 }
@@ -96,6 +101,10 @@ a > code {
 
 a > code:hover {
     color: var(--bg-color)
+}
+
+figure > .img > img {
+    width: 100%;
 }
 
 figcaption > h4 {

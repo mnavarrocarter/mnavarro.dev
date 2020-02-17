@@ -1,5 +1,5 @@
 baseURL: "https://mnavarro.dev/"
-languageCode: "en-us"
+languageCode: "en-GB"
 title: "mnavarro.dev"
 metaDataFormat: "yaml"
 
@@ -15,7 +15,7 @@ googleAnalytics: "UA-73118336-11"
 Params:
   footerText: "Process exited with code 0"
   mainSections: ["post","posts"]
-  dateFormat: "01 January 2006"
+  dateFormat: "2 January 2006"
   rss: true
   comments: true
   readingTime: true

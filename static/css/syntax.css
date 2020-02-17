@@ -9,6 +9,7 @@
 /* Class */ .chroma .nx { color: #FFCB6B; font-weight: bold }
 /* Dots */ .chroma .o { color: #89DDFF; font-weight: bold }
 /* Function */ .chroma .nf { color: #82AAFF; font-weight: bold }
+/* Function */ .chroma .nc { color: #FFCB6B; font-weight: bold }
 /* Var */ .chroma .nv { color: #A6ACCD; font-weight: bold }
 /* Parenthesis */ .chroma .p { color: #89DDFF; font-weight: bold }
 /* KeywordConstant */ .chroma .kc { color: #ffffff; font-weight: bold }
@@ -26,7 +27,7 @@
 /* LiteralStringBacktick */ .chroma .sb { color: #C3E88D; font-weight: bold }
 /* LiteralStringChar */ .chroma .sc { color: #C3E88D; font-weight: bold }
 /* LiteralStringDelimiter */ .chroma .dl { color: #C3E88D; font-weight: bold }
-/* LiteralStringDoc */ .chroma .sd { color: #C3E88D; font-weight: bold }
+/* LiteralStringDoc */ .chroma .sd { color: #676E95; font-weight: bold }
 /* LiteralStringDouble */ .chroma .s2 { color: #C3E88D; font-weight: bold }
 /* LiteralStringEscape */ .chroma .se { color: #C3E88D; font-weight: bold }
 /* LiteralStringHeredoc */ .chroma .sh { color: #C3E88D; font-weight: bold }

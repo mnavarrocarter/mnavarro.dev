@@ -1,10 +1,8 @@
-@import url('https://fonts.googleapis.com/css?family=PT+Mono&display=swap');
-
 /* VARIABLES */
 :root {
     --text-color: #F7F7F7;
     --bg-color: #282A36;
-    --link-color: #32779B;
+    --link-color: rgb(116,194,233);
     --select-color: #0C0A20;
     --mute-color: #8492b1;
     --max-width: 600px;

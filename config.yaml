@@ -13,7 +13,6 @@ disqusShortname: "mnavarro"
 googleAnalytics: "UA-73118336-11"
 
 Params:
-  footerText: "Process exited with code 0"
   mainSections: ["post","posts"]
   dateFormat: "2 January 2006"
   rss: true

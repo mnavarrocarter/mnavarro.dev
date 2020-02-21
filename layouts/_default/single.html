@@ -3,7 +3,15 @@
   <div class="wrapper">
     <article>
       <h1 class="post-title">{{ .Page.Title }}</h1>
-      <p class="small">{{ .PublishDate.Format .Site.Params.dateFormat }}</p>
+      <p class="small">
+        {{ .PublishDate.Format .Site.Params.dateFormat }}
+        {{ if .Site.Params.readingTime }}
+         | {{ .ReadingTime }} minutes read
+        {{ end }}
+        {{ if .Site.Params.wordCount }}
+          | {{ .WordCount }} words
+        {{ end }}
+      </p>
       <div class="content">
         {{ .Content }}
       </div>

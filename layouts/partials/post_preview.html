@@ -3,5 +3,13 @@
     {{ if .Params.subtitle }}
         <p class="muted short"><i>{{ .Params.subtitle }}</i></p>
     {{ end }}
-    <p class="small short">{{ .PublishDate.Format .Site.Params.dateFormat }}</p>
+    <p class="small short">
+        {{ .PublishDate.Format .Site.Params.dateFormat }}
+        {{ if .Site.Params.readingTime }}
+            | {{ .ReadingTime }} minutes read
+        {{ end }}
+        {{ if .Site.Params.wordCount }}
+            | {{ .WordCount }} words
+        {{ end }}
+    </p>
 </article>

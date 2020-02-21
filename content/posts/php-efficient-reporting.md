@@ -167,7 +167,7 @@ Who needs ETL processing libraries when you have the power of Generators at your
 {{< figure src="https://media.giphy.com/media/11ahZZugJHrdLO/giphy-downsized.gif" title="OMG generators are soo cool!" >}}
 
 ## 4. Prefer easy-to-stream content types
-One of the first things I ask when someone asks me to dump a report from a set of SQL tables is "Can the report be a CSV?", most of the time the answer is an annoying no, because is too complex for the business guy to import a csv file into excel (really?). But I try to make mi point anyways.
+One of the first things I ask when someone asks me to dump a report from a set of SQL tables is "Can the report be a CSV?", most of the time the answer is an annoying no, because is too complex for the business guy to import a csv file into excel (really?). But I try to make my point anyways.
 
 Every content type structured as a tree is hard to stream, specially in PHP. I'm mainly talking about `xml` and `json` here. As you might know, an excel file is just compressed xml. Even really good libraries like [`box/spout`][3] have to do some in-memory cache or temp file gymnastics to stream `.xlsx` files. Json files can be streamed as well, but not using the native json extension functions. For streaming json in PHP you should use [`violet-php/streaming-json-encoder`][4]. But the most simple of all formats is the beautiful csv. Just line by line streaming: forget about parsing and reading byte per byte.
 

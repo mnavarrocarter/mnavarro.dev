@@ -417,6 +417,6 @@ final class DoctrineORMUserRepository extends DoctrineORMRepository implements U
 }
 ```
 
-The result is really nice to work with. I've taken this approach is several projects so far and feels great to use repositories as immutable collections: feels natural. Create Doctrine ODM, Filesystem or In-Memory implementations like the Doctrine ORM one it's trivial. Implementors just need to take into account the immutability aspect of it, but that's all there is to it.
+The result is really nice to work with. I've taken this approach is several projects so far and it feels great. The method names convey meaning and work well. Creating different implementations like a Doctrine Mongo ODM, Filesystem or In-Memory it's trivial. Implementors just need to take into account the immutability aspect of it, but that's all really.
 
 I really hope you like this approach as much as I do and start using it in your projects.

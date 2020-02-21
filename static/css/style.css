@@ -33,7 +33,7 @@ html,body {
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: 'PT Mono', monospace;
-    font-size: 1rem;
+    font-size: 1.05rem;
     line-height: 1.7rem;
 }
 
@@ -155,7 +155,7 @@ article {
 }
 
 .post-nav-prev > a::before {
-    content: "<- ";
+    content: "↤ ";
 }
 
 .post-nav-next {
@@ -163,7 +163,7 @@ article {
 }
 
 .post-nav-next > a::after {
-    content: " ->";
+    content: " ↦";
 }
 
 .post-terms {

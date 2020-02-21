@@ -189,6 +189,14 @@ footer {
     margin-bottom: 20px;
 }
 
+twitter-widget {
+    margin: 0 auto;
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
 /* TEXT STYLING */
 .muted {
     color: var(--mute-color) !important;

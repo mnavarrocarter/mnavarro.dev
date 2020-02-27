@@ -9,7 +9,7 @@ url: /media
 
 Sometimes, nice people take a video when I talk about cool things. That is nice and I'd like to share it with you.
 
-- Event Sourcing Applied - DevFest, Santiago CL, Oct-2019 (Coming soon!)
+- [Event Sourcing Applied - DevFest, Santiago CL, Oct-2019](https://www.youtube.com/watch?v=uJEd4HFXxvY&t=1s)
 - [Container Theory and Docker - Option SpA, Santiago CL, Dec-2019](https://www.youtube.com/watch?v=NJtal-GRNjc&t=3933s)
 
 ## PHP Bits

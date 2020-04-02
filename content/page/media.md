@@ -14,4 +14,4 @@ Sometimes, nice people take a video when I talk about cool things. That is nice 
 
 ## PHP Bits
 
-Everyone would like to be a famous YouTuber, right? Well, this is my poorly-executed attempt to become one, where I teach about coding and best practices, mostly in PHP. It is called, [PHP Bits](channel/UCsdipFUfs6gcj1rQKEIlWLg).
+Everyone would like to be a famous YouTuber, right? Well, this is my poorly-executed attempt to become one, where I teach about coding and best practices, mostly in PHP. It is called, [PHP Bits](https://www.youtube.com/channel/UCsdipFUfs6gcj1rQKEIlWLg).

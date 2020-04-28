@@ -24,6 +24,7 @@ There are still some features I would love to implement. If you know a bit about
 - [ ] Support i18n
 - [ ] Social share support
 - [ ] External urls link
+- [ ] Improve `/categories` and `/tags` pages
 
 ## Run the blog locally
 Clone it with git and then boot up a dev environment with `docker-compose`:

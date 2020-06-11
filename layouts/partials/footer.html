@@ -3,7 +3,7 @@
   {{ end }}
 <footer>
   <div class="wrapper">
-    {{ if and .Site.Params.Edit.repo .File.Path }}
+    {{ if and .Site.Params.Edit.enable .File.Path }}
     <p class="small">Found a typo? <a href="{{ .Site.Params.Edit.repo }}/_edit/{{ .Site.Params.Edit.branch }}/content/{{ .File.Path }}" target="_blank">Suggest a change.</a></p>
     {{ end }}
     <p class="small">Last Modified:

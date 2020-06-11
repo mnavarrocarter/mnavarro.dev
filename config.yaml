@@ -23,7 +23,7 @@ Params:
   delayDisqus: true
 #  gcse = "012345678901234567890:abcdefghijk" # Get your code from google.com/cse. Make sure to go to "Look and Feel" and change Layout to "Full Width" and Theme to "Classic"
   Edit:
-    repo: "https://github.com/mnavarrocarter/blog"
+    repo: "https://git.mnavarro.dev/mnavarro/blog"
     branch: "master"
   Social:
     name: "Matías Navarro Carter"

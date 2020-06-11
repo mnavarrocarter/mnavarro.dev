@@ -4,7 +4,7 @@
 <footer>
   <div class="wrapper">
     {{ if and .Site.Params.Edit.repo .File.Path }}
-    <p class="small">Found a typo? <a href="{{ .Site.Params.Edit.repo }}/edit/{{ .Site.Params.Edit.branch }}/content/{{ .File.Path }}" target="_blank">Suggest a change.</a></p>
+    <p class="small">Found a typo? <a href="{{ .Site.Params.Edit.repo }}/_edit/{{ .Site.Params.Edit.branch }}/content/{{ .File.Path }}" target="_blank">Suggest a change.</a></p>
     {{ end }}
     <p class="small">Last Modified:
       {{ if .Site.Params.since }}

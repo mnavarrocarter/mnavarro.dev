@@ -58,4 +58,5 @@
   <link rel="preload" href="{{ "css/syntax.css" | absURL }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="{{ "css/syntax.css" | absURL }}"></noscript>
 
-{{ template "_internal/google_analytics_async.html" . }}
+  <!-- We include Plausible Analytics -->
+  <script async defer data-domain="mnavarro.dev" src="https://stats.mnavarro.dev/js/index.js"></script>

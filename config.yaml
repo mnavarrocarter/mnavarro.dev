@@ -10,7 +10,6 @@ pygmentsCodefencesGuessSyntax: true
 pygmentOptions: "linenos=inline"
 
 disqusShortname: "mnavarro"
-googleAnalytics: "UA-73118336-11"
 
 Params:
   mainSections: ["post","posts"]

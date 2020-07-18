@@ -5,7 +5,7 @@ draft: false
 url: /about
 ---
 
-I'm Matías, a PHP Jedi Master based in the UK. The force is strong in me. I'm an skilled Backend Web Developer but I can also do frontend. I also develop in Node JS, and I'm familiar with Python, Go and Vala.
+I'm Matías, a PHP Jedi Master based in the UK. I'm an skilled Backend Web Developer but I can also do frontend. I also develop in Node JS, and I'm familiar with Python, Go and Vala.
 
 I have experience in all sort of projects, of different sizes and of wide spectrum of domains: medical, multimedia, air traveling and e-commerce. My style of development revolves around the ideas of Domain Driven Design. This means that when I develop software, I try to understand and breathe the business, in order to effectively model it into code. I mostly do web development, specially (truly) REST apis; but I also develop cli apps and tiny desktop apps for Linux.
 

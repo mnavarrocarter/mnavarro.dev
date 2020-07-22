@@ -1,5 +1,5 @@
 ---
-title: Namespaced Taxonomy Sindrome
+title: Namespaced Taxonomy Syndrome
 subtitle: Correcting bad habits and wrong assumptions in the use of PHP Namespaces
 tags: 
     - php
@@ -10,7 +10,7 @@ draft: false
 date: 2020-07-20T20:00:00+01:00
 ---
 
-## The Discovery of a Sindrome
+## The Discovery of a Syndrome
 
 The past week I had some really nice holidays, but my wife still had to work. That's nice sometimes because it means staying at home with loads of time to do one of my favorite things: getting myself into learning and coding (I also did some cleaning, cooking and DIYing too!).
 
@@ -128,7 +128,7 @@ DDD projects with Hexagonal Architecture are well known for their deeply nested 
 
 I just need `Project\Account` and `Project\DoctrineAccount`. Nothing else. They could live in totally different folders, but they need not to be in different namespaces. All the things in the middle is just taxonomies to keep things organized. 
 
-You could allow `Project\BoundedContext` just because you could have two account objects in different bounded contexts and they are definitely not the same account. So namespaces fulfil their role here by separating meanings between bounded contexts. But more than that is taxonomy sindrome.
+You could allow `Project\BoundedContext` just because you could have two account objects in different bounded contexts and they are definitely not the same account. So namespaces fulfil their role here by separating meanings between bounded contexts. But more than that is taxonomy syndrome.
 
 With this method, I can still keep the folders organized in and Hexagonal Architecture way, but keeping the namespace use consistent (and short!) This even helps to fulfil the use of the Domain Language in code.Domain Events and Errors can be in the same namespace too, but in totally different folders, that way we can easily find them.
 

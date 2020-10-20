@@ -1,32 +1,28 @@
 ---
-title: "Separating Frontend Concerns"
-subtitle: How to decouple your business logic from UI frameworks like React, Vue o Svelte.
+title: "Simple State Management For React (Hooks) Applications"
+subtitle: How to toss your Redux/Mobx voodoo to the trash and never come back to it again
 draft: true
 tags:
-- nee
+- react
+- frontend
+- state
 date: 2020-05-06T10:00:00-03:00
 ---
 
-The Javascript world changes fast! Any frontend developer knows that. New technologies in the JS world emerge every year, and some of them with very interesting philosophies, architectural styles and features.
+1. "I need to know!": the observer pattern
 
-In this fast-changing environment that frontend development is, it is crucial that our applications are designed to change as quickly too. This means, for example, that your application should be able to switch from React to Vue without needing to rewrite the whole thing. Can your application do that?
+Explain the observer pattern and benefits when applied to data.
 
-If your application can't, then let me say this: you have coupled your application (or business logic) to a UI framework. This means that is so entangled with this specific UI framework that you simply cannot get rid of it. This is bad news for your product because, at the pace UI frameworks are changing in JS world, it will become legacy software in about 3-4 years. Nobody wants to invest months of development time, money and effort just to build something that will last for a few years only.
+2. A Simple Api: Subscribe and Mutate.
 
-It might be that the change is needed even before. Maybe you started using React, but you realized it was too memory intensive and expensive for mobile or embedded devices, so much it's killing your product in those platforms. You decided to move to Svelte, but the costs of the move are so high that a complete rewrite is the best option.
+Design a good api that implements this pattern.
 
-Maybe you want to extract the core logic of the business to a separate package, so it can be used by other libraries. But you can't: it is absolutely merged with your UI framework.
+3. Application state is side-effecty (fetched, cached, mutated)
 
-We must do better, we should want to do better and, good news, we can do better indeed.
+Keep side effects under control with `useEffect`
 
-## So "How Should We Then Code"
+4. Compose, don't glue.
 
-Paraphrasing the title of Francis' Schaeffer [amazing book][schaeffer], we ask the question: "How should we then code our frontend applications so they can be resistant to change?"
+Don't stick things together, make them work together! Separate concerns.
 
-In order to answer that question correctly, wee need to remember how frontend applications work. Most of them fetch data from somewhere, process it, display it to a user and allow performing operations with that data based on user's input and actions. The fetching, processing and operating of data is strictly related to what is called business logic. The displaying of data and reacting to user's input and action corresponds to the presentation logic, or what is commonly called the UI.
-
-Reactive UI frameworks like React, Vue, Svelte and others are part of the presentation layer. Their purpose is to help render (display) views (components) using declarative logic. So therefore, they should not contain any logic in themselves that deals with api calls and data processing, which is a business logic concern. Often times this is overlooked because these frameworks also provide constructs for dealing with application logic, like complex state management solutions. Remember, operations on centralized state (data) are part of the business logic, not the presentation logic.
-
-You could argue that state management solutions separate logic from presentation by putting that logic into a store. And it is true. But often times these state management solutions are (1) overcomplicated and (2) can only work with the specific UI vendor (Redux and React, Vuex and Vue, etc). So, the purpose of avoiding vendor lock-in is not entirely fulfilled.
-
-[schaeffer]: https://www.amazon.co.uk/HOW-SHOULD-WE-THEN-LIVE/dp/1581345364
+Local storage and history are two good examples.

@@ -181,17 +181,19 @@ This pretty much covers the basic things you can do with your Yubikey to secure 
 
 ## Using your Yubikey with GnuPG
 
-### GPG
+### What is GPG?
 
 GPG stands for Gnu Privacy Guard, which is an implementation of the OpenPGP message format defined in [RFC 4880](https://tools.ietf.org/html/rfc4880). Basically, it's a way of doing public-key (asymmetric) cryptography.
 
 GPG has widespread use in the Linux community, and it is used with a multitude of purposes. Package repositories sign files and sha-sums with their keys to ensure that nobody tampers with the package contents. Wistleblowers send encrypted messages using their keys via email to their trusted contacts. Sysadmins authenticate with consoles in remote machines using their keys, and can grant access to others by signing sub keys. Ddevelopers sign code contributions to prevent malicious impersonation.
 
-In GPG, everything starts with a **master key**. This is the most important file of your keyring, and it is meant to be shared with no one. This is the ultimate proof of your identity online, and I suggest you take care of your private key with the utmost care. Mine is stored in a USB in safe location, absolutely offline. And even if you take a hold of it, you'll need the passphrase to do anything with it.
+### How does GPG work?
 
-How do you use the master key then if is not in your computer? Well, this is where the concept of subkeys comes into play. The idea behind GPG, is that you have a set of subkeys specially crafted for encrypting, signing and authenticating. All these keys are derived from the master, but are different. The cool thing is that all of them, inlcuding your master one, share the same public part. This means that any subkey derived from your master can be validated against the same public key.
+In GPG, everything starts with a **master key**. This is the most important file of your keyring, and it is meant to be kept absolutely secret and off your machine, preferrably in an encrypted USB.
 
-Traditionally, GPG keys are stored in your computer. But Yubikeys are so amazing that they allow you to store three keys inside them and proctect them with a PIN. So if you need to encrypt or sign something, or authenticate against a remote machine, you need your Yubikey plugged in order to be allowed to use the keys inside it.
+How do you use your key if is not in your computer then? Well, this is where the concept of subkeys comes into play. Subkeys are just private keys drived from your master, crafted specially for handling specific tasks. The most common setup is that you have a subkey for authentication purposes, another for signing and a last one for encryption. 
+
+Traditionally, GPG keys are stored in your computer. But Yubikeys are so amazing that they allow you to store three keys inside them and proctect them with a PIN. So if you need to encrypt or sign something, or authenticate against a remote machine, you can use your Yubikey and keep your keys safe.
 
 Pretty nifty, huh?
 
@@ -220,7 +222,6 @@ Then, you'll be asked for the keysize. 4096 is the most secure option so go with
 
 Lastly, you will be asked if you want to set up an expiration date. Expiring a master key does not have a lot of sense, so select 0 for make the key valid forever. Confirm that it does not expire and move on.
 
-
 You'll be asked to add an identity to your key. You can write your name, a comment and an email. Mine is "Matias Navarro-Carter (Personal) <mnavarrocarter@gmail.com>".
 
 Then, after running some entropy generation your brand new master key will be created and ultimately trusted in your system. Congrats!
@@ -230,14 +231,14 @@ Then, after running some entropy generation your brand new master key will be cr
 If you already have a master key and you want to import it, you should do:
 
 ```bash
-gpg --import /path/to/your/pem/formatted/master/key
+gpg --import /path/to/your/armor/formatted/master/key
 ```
 
 > NOTE: You will be asked to write your passphrase if your key is encrypted.
 
 ### Adding more Identities
 
-If you have more than one email (for example, a work email or an email from your open source organization) you might want to add those to your key, as it will be useful for things like commit signing and stuff.
+If you have more than one email (for example, a work email or an email from your open source organization) you might want to add those to your key, as it will be useful for things like commit signing and email signing/encrypting.
 
 Grab your key id with:
 
@@ -248,7 +249,7 @@ gpg --list-keys
 And then run:
 
 ```bash
-gpg --edit-key <your-key-id>
+gpg --edit-key <your-key-email-address>
 ```
 
 This will start the `gpg>` prompt. Now you can run the command to add an identity.
@@ -265,14 +266,16 @@ gpg> save
 
 #### Creating the Sub Keys
 
-Now that we have our master key, we will create 3 subkeys for each Yubikey you own. Each key will have a special use for encryption, signing and authenticating.
-
-
+Now that we have our master key, we will create 3 subkeys. These subkeys will be stored in our Yubikeys and then we will completely remove them from your machine, along with the master key. Each subkey will have a distinct capability.
 
 - create sub keys
 - add more identities
 - export your master
 - export your public
+
+### Backing Up
+
+
 
 ### Move the keys to the Yubikey
 

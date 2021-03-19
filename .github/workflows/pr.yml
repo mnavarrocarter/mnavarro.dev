@@ -1,0 +1,17 @@
+name: github pages
+
+on:
+  pull_request:
+
+jobs:
+  spellcheck:
+    name: Spellcheck
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout code
+        with:
+          submodules: false # Don't have Hugo themes
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+      - uses: rojopolis/spellcheck-github-actions@0.11.0
+        name: Check the Spelling

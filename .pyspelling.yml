@@ -1,0 +1,8 @@
+matrix:
+- name: Blog Posts
+  sources:
+  - content/**/*.md
+  aspell:
+    add-extra-dicts:
+    - custom.dic
+  pipeline:

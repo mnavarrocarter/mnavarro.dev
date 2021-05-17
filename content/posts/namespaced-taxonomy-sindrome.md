@@ -20,7 +20,7 @@ It was a brilliant talk. I didn't really agree much with his "less lines of code
 
 	~ Namespaces are for preventing name collisions, not for creating taxonomies.
 
-That really blew my mind. I felt guilty. I have absolutely misused namespaces basically since I started in OOP. I've done the `use MuffinMail\MuffinHash\MuffinHash` thing. What he is describing is what I've decided to call **Namespaced Taxonomy Sindrome**. Every single PHP project does this thing. It's everywhere.
+That really blew my mind. I felt guilty. I have absolutely misused namespaces basically since I started in OOP. I've done the `use MuffinMail\MuffinHash\MuffinHash` thing. What he is describing is what I've decided to call **Namespaced Taxonomy Syndrome**. Every single PHP project does this thing. It's everywhere.
 
 Take this almost randomly picked example from the `Illuminate` namespace in Laravel: 
 
@@ -81,7 +81,7 @@ The first way is to pass an array of paths to the PSR-4 autoloaded namespace, li
 What you are saying here to composer is that all of these folders are inside the same namespace. Cool, isn't?
 This way, you get the double benefit. First, your code is still organized in different folders to help you reason about it and keep things organized for development. Second, our namespaces fulfil the purpose of avoiding collisions, and for that reason they are easier to use and simpler to reason about.
 
-The second way of doing it is simpler. It does not require to specify every folder. Instead you can just tell composer to build you a classmap scanning every single one of your source files.
+The second way of doing it is simpler. It does not require to specify every folder. Instead you can just tell composer to build you a *classmap* scanning every single one of your source files.
 
 ```json
 {

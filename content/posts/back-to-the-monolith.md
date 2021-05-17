@@ -18,7 +18,7 @@ I'm grateful to microservices in the sense that they helped us see more clearly 
 
 {{< tweet 1154067788828434433 >}}
 
-Let's think for a second. We really needed to make different applications to comunicate over TCP to realize that team autonomy and separation of concerns was a good thing? If breaking down problems into smaller units and give certain individuals ownership of the implemented solution is *the* requirement of microservices, then we should have been doing them since the 70's.
+Let's think for a second. We really needed to make different applications to communicate over TCP to realize that team autonomy and separation of concerns was a good thing? If breaking down problems into smaller units and give certain individuals ownership of the implemented solution is *the* requirement of microservices, then we should have been doing them since the 70's.
 
 Truth is, OOP already solved these problems. I think we just forgot how to use it to our benefit. What is better? A RPC HTTP over TCP endpoint that takes a json payload and process it with some notorious latency and possibility of network error, or an interface (with the corresponding implementation) that names the action in a meaningful way, documents it and takes a well defined data class as the argument so you can have a deterministic in-memory result?
 

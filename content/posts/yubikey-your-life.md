@@ -10,7 +10,7 @@ date: 2020-10-15T01:00:00+01:00
 
 Is almost the end of 2020 and for a few years already I've been wanting to get my hands on a pair of Yubikeys to add an extra layer of security to my Laptop and important accounts. This finally happened a few weeks ago, when I recieved my two Yubikey 5 NFC. 
 
-I did a lot of research on how to set them up properly and discovered in the process that there is a lot of information to distil and collate. For example, I was not quite into GnuPG really, and I learned quite a lot by setting up my key.
+I did a lot of research on how to set them up properly and discovered in the process that there is a lot of information to distill and collate. For example, I was not quite into GnuPG really, and I learned quite a lot by setting up my key.
 
 Since I went through all the hassle of configuring my own Yubikey, chasing information in different sources and making some sense of it, I had the idea that would be better if I documented the whole process. In some of the guides out there, there is not a lot about the *why* of things -- most of them are the "copy and paste this command" kind of guide. So in this guide my goal is to provide some context and let you make the choices and understand what's going on. 
 

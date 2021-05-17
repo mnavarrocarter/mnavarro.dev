@@ -77,7 +77,7 @@ Let's remember our use case. We want to count resources in a collection. Sometim
 
 This is better, but not ideal. What happens if I just need the count? How do I get rid of the unnecessary json rendering of the representation is that's the case?
 
-Well, turns that we a bit of twaeking and some semantic HTTP we can do better. HTTP has an obscure verb that can help us here, a verb to return just the headers of a request, but not the body: **the `HEAD` verb**.
+Well, turns that we a bit of tweaking and some semantic HTTP we can do better. HTTP has an obscure verb that can help us here, a verb to return just the headers of a request, but not the body: **the `HEAD` verb**.
 
 By HTTP spec, `HEAD` should not have a return body but must have the exact same headers than the normal `GET` request. You would be happy to know that the most popular routing libraries match `HEAD` requests to your `GET` requests automatically for you. This is done in the [Laravel Router](https://stackoverflow.com/questions/22118598/laravel-routes-gethead) for example.
 

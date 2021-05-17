@@ -5,7 +5,7 @@ tags:
     - project-management
     - programming
 draft: false
-date: 2021-05-17T18:08:00+01:00
+date: 2021-05-16T18:08:00+00:00
 ---
 
 Over the years I have developed a passion for seeing software projects fail. I love the feeling of breakdown and despair they cause everyone involved in them. Failed projects break teams, make companies loose money, disappoint clients and burn out the people involved in them. They have a beautiful destructive potential.

@@ -51,11 +51,11 @@ This is by far one of the most powerful strategies to make your project fail. De
 You shouldn't have issues doing this, as most developers are socially awkward: they don't really like people nor interacting with clients. Use those developers to reinforce to the more "social" ones the idea that that is not their job to do that.
 
 ### The Counterfeit Agile
-This is very related to the previous tactic, but deserves a topic of it's own. You must make sure your are *doing* Agile and not *being* agile. There is a difference. You see, agile is an adjective, not a noun.
+This is very related to the previous tactic, but deserves a topic of it's own. You must make sure developers are *doing* Agile and not *being* agile. There is a difference. You see, agile is an adjective, not a noun.
 
 As long as they think that agile means using Jira, estimate using story points and divide work in sprints of some duration, you'll be fine. They will think their job as developers is reduced to just closing tickets and they will never go beyond that. 
 
-You want them to eat and breathe the commercial Agile, that thing some companies branded and sold as a methodology for project management. They must never know that agile is a set of values and principles. They must believe is methodology. If they discover the real meaning of it, they will want to apply them, and that could be the success of your project. Don't let that happen! 
+You want them to eat and breathe the commercial Agile, that thing some companies branded and sold as a methodology for project management. They must never know that agile is a set of values and principles. They must believe is methodology. If they discover the real meaning of it, they will want to apply it, and that could be the success of your project. Don't let that happen! 
 
 Actually, one effective thing you can do is talk to your ISP and tell them to block [this website](https://agilemanifesto.org) from the company internet. Again, they must not read the principles, because they are in direct contradiction with all the advice that I've been giving you here.
 

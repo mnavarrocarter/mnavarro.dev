@@ -1,6 +1,6 @@
 ---
 title: Yubikeying your digital life
-subtitle: A comprehensive guide on how to setup your Yubikey for most of the things you can do with it in 2020
+subtitle: A comprehensive guide on how to setup your Yubikey for most of the things you can do with it in 2021
 tags: 
     - yubikey
     - security
@@ -8,22 +8,23 @@ draft: true
 date: 2020-10-15T01:00:00+01:00
 ---
 
-Is almost the end of 2020 and for a few years already I've been wanting to get my hands on a pair of Yubikeys to add an extra layer of security to my Laptop and important accounts. This finally happened a few weeks ago, when I recieved my two Yubikey 5 NFC. 
+We are in the middle of 2020. Password day was a few weeks ago and never in the history of computing so much emphasis has been put on security. We are tremendously interconnected, information is shared at rampant pace, and people's efforts trying to steal our data or get access to our company's systems are more restless than ever. 
 
-I did a lot of research on how to set them up properly and discovered in the process that there is a lot of information to distill and collate. For example, I was not quite into GnuPG really, and I learned quite a lot by setting up my key.
+I've owned a couple of Yubikeys NFC 5 for a while now, and I've been fascinated by all the things you can do with them. Since I got them, I've been doing a lot of research on how to set them up properly. That has been a time consuming process, with a lot of information to distill and collate. For example, I really did not know much about GPG a few months ago, and I've learned quite a lot by setting up my keys.
 
-Since I went through all the hassle of configuring my own Yubikey, chasing information in different sources and making some sense of it, I had the idea that would be better if I documented the whole process. In some of the guides out there, there is not a lot about the *why* of things -- most of them are the "copy and paste this command" kind of guide. So in this guide my goal is to provide some context and let you make the choices and understand what's going on. 
+Since I went through all the hassle of configuring my own Yubikeys, chasing information in different sources and making some sense of it, I had the idea that would be better if I documented the whole process. In some of the guides out there, there is not a lot about the *why* or *what* of things -- most of them are the "copy and paste this command" kind of guide. So in this guide my goal is to provide some context and let you make the choices yourself by helping you understand what's going on. 
 
-So, this is my humble attempt of a comprehensive guide of most of the things that are possible with your Yubikey as of 2020. I plan to update and grow it overtime, as I learn new things.
+So, this is my humble attempt of a comprehensive guide of most of the things that are possible with your Yubikey as of 2021. I plan to update and grow it overtime, as I learn new things.
 
 A the moment, this guide covers:
 
-- Making your Linux machine recognize your Yubikey with `udev` (October 2020)
-- Using your Yubikey to secure your Linux machine via PAM (October 2020)
-- Using your Yubikey with GnuPG (October 2020)
-- Using your Yubikey with SSH (October 2020)
+- Making your Linux machine recognize your Yubikey with `udev` (May 2020)
+- Using your Yubikey to secure your Linux machine via PAM (May 2020)
+- Using your Yubikey with GnuPG (May 2020)
 - Using your Yubikey to secure your accounts with WebAuthn compatible websites (October 2020)
-- Using your Yubikey to unlock a LUKS Encrypted Partition (Coming soon)
+- Using your Yubikey to store OTP shared secrets (Upcoming).
+- Using your Yubikey with SSH (Upcoming)
+- Using your Yubikey to unlock a LUKS Encrypted Partition (Upcoming)
 
 > DISCLAIMER: My Yubikeys are the 5 NFC USB type. Some of the steps here may not work for your Yubikey. Feel free to comment if some steps are not applicable to your own Yubikey and I'll gladly update the guide. 
 
@@ -183,17 +184,17 @@ This pretty much covers the basic things you can do with your Yubikey to secure 
 
 ### What is GPG?
 
-GPG stands for Gnu Privacy Guard, which is an implementation of the OpenPGP message format defined in [RFC 4880](https://tools.ietf.org/html/rfc4880). Basically, it's a way of doing public-key (asymmetric) cryptography.
+GPG stands for Gnu Privacy Guard, which is an implementation of the OpenPGP message format defined in [RFC 4880](https://tools.ietf.org/html/rfc4880). Basically, it's a clever way of doing public-key (asymmetric) cryptography.
 
-GPG has widespread use in the Linux community, and it is used with a multitude of purposes. Package repositories sign files and sha-sums with their keys to ensure that nobody tampers with the package contents. Wistleblowers send encrypted messages using their keys via email to their trusted contacts. Sysadmins authenticate with consoles in remote machines using their keys, and can grant access to others by signing sub keys. Ddevelopers sign code contributions to prevent malicious impersonation.
+GPG has widespread use in the Linux community, and it is used with a multitude of purposes. Package repositories sign files and sha-sums with their keys to ensure that nobody tampers with the package contents. Wistleblowers send encrypted messages using their keys via email to their trusted contacts. Sysadmins authenticate with consoles in remote machines using their keys, and can grant access to others by signing sub keys. Developers sign code commits written by them to prevent malicious impersonation.
 
 ### How does GPG work?
 
-In GPG, everything starts with a **master key**. This is the most important file of your keyring, and it is meant to be kept absolutely secret and off your machine, preferrably in an encrypted USB.
+In GPG, everything starts with a **master key**. This is the most important file of your keyring, and it is meant to be kept absolutely secret and off your machine, preferably in an encrypted USB.
 
-How do you use your key if is not in your computer then? Well, this is where the concept of subkeys comes into play. Subkeys are just private keys drived from your master, crafted specially for handling specific tasks. The most common setup is that you have a subkey for authentication purposes, another for signing and a last one for encryption. 
+How do you use your key if is not in your computer then? Well, this is where the concept of subkeys comes into play. Subkeys are just private keys derived from your master, crafted specially for handling specific tasks. The most common setup is that you have a subkey for each of the three most common security operations:  authenticating, signing and encrypting.
 
-Traditionally, GPG keys are stored in your computer. But Yubikeys are so amazing that they allow you to store three keys inside them and proctect them with a PIN. So if you need to encrypt or sign something, or authenticate against a remote machine, you can use your Yubikey and keep your keys safe.
+Traditionally, GPG private keys were stored in your computer. But Yubikeys are so amazing that they allow you to store three keys inside them and being able to retrieve them by using a PIN. So if you need to encrypt or sign something, or authenticate against a remote machine, you can use your Yubikey and keep your keys safe.
 
 Pretty nifty, huh?
 
@@ -207,16 +208,15 @@ But first, make sure we have gpg with:
 sudo apt install -y gnupg2 gnupg-agent
 ```
 
-
 Then, we create your master key:
 
 ```bash
 gpg --gen-key
 ```
 
-Then, you should see an output asking you for the type of key. Select option 4 (RSA Sign only).
+Then, you should see an output asking you for the type of key. Select option 4 (RSA Sign only). RSA is the gold standard for encryption nowadays, [no matter what you have heard about it](https://crypto.stackexchange.com/questions/88582/does-schnorrs-2021-factoring-method-show-that-the-rsa-cryptosystem-is-not-secur).
 
-Then, you'll be asked for the keysize. 4096 is the most secure option so go with it.
+After this, you'll be asked for the keysize. 4096 is the most secure option (more entropy is better than less) so go with it.
 
 > NOTICE: Some old Yubikeys do not support 4096 bits of size for their keys. Check before. If you have a v4 or a v5 NFC like me, you'll be fine.
 
@@ -224,7 +224,7 @@ Lastly, you will be asked if you want to set up an expiration date. Expiring a m
 
 You'll be asked to add an identity to your key. You can write your name, a comment and an email. Mine is "Matias Navarro-Carter (Personal) <mnavarrocarter@gmail.com>".
 
-Then, after running some entropy generation your brand new master key will be created and ultimately trusted in your system. Congrats!
+Then, after getting some random bytes from a source with good entropy your brand new master key will be created and ultimately trusted in your system. Congrats!
 
 #### Importing a Master Key (Optional)
 
@@ -258,29 +258,25 @@ This will start the `gpg>` prompt. Now you can run the command to add an identit
 gpg> adduid
 ```
 
-Follow the intructions to add your name, comment and email. Once you have confirmed, you can save your changes to your key with
+Follow the instructions to add your name, comment and email. Once you have confirmed, you can save your changes to your key with
 
 ```bash
 gpg> save
 ```
 
-#### Creating the Sub Keys
+### Creating the Sub Keys
 
-Now that we have our master key, we will create 3 subkeys. These subkeys will be stored in our Yubikeys and then we will completely remove them from your machine, along with the master key. Each subkey will have a distinct capability.
+Now that we have our master key, we will create 3 subkeys. These subkeys will be stored in our Yubikeys and then we will completely remove them from our machine, along with the master key. As we mentioned, each subkey will be used for an specific purpose only: authenticating, signing or encrypting.
 
-- create sub keys
-- add more identities
-- export your master
-- export your public
+Create your first subkey by typing:
 
-### Backing Up
+```bash
 
+```
 
+### Moving the Sub Keys to the Yubikey
 
-### Move the keys to the Yubikey
-
-
-#### Installing Dependencies
+#### Install dependencies for the thing to move them
 
 ```
 sudo apt install pcscd scdaemon
@@ -385,7 +381,7 @@ sudo add-apt-repository ppa:yubico/stable && sudo apt-get update
 ```
 
 
-### Trust in another machine
+#### Trust in another machine
 
 ```
 gpg --fetch-keys URL
@@ -404,6 +400,20 @@ gpg --edit-key <KEYID>
 > trust
 # select trust ultimately
 ```
+
+### Backing Up the Master and Sub Keys
+
+At this point we are done using our master and sub keys. This does not mean that we will never need them again.
+
+We would need our subkeys if we decide to purchase a new one in the future. We would need the master to invalidate the old sub keys and create new ones if for some reason in the future we believe the private subkeys stored in our Yubikey might be compromised -- which can only happen if someone really expert in electronics tampers with the chips and manages to read the keys bytes.
+
+That's unlikely, and out of the scope of this tutorial. Nonetheless, we need to preserve those keys somewhere safe.
+
+What I personally do is that I have an encrypted USB flash drive where I store really important stuff, like my master and sub keys. I would encourage you to do the same. If you are not paranoid enough to use an encrypted drive, then a simple USB flash drive will suffice. Just, don't leave the master key nor the subkeys in your laptop. They must be sitting outside of it, in some drawer at your home desk.
+
+To move your master key out of your system, you need to export it into ARMOR format. This is some base64 encoding with some magic to it. 
+
+First, list your secret keys.
 
 
 ## Sign commits

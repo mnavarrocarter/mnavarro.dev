@@ -112,7 +112,7 @@ class ConcreteEmailFactory
 }
 ```
 
-The secret is this: when executed, the callable will leave the class in it's original state. Now, you can group a bunch of these services into a composite initializer and have a single place in your code where you will initialize all the tenant state, group the callables to unset the state, and then 
+The secret is this: when executed, the callable will leave the class in it's original state. Now, you can group a bunch of these services into a composite initializer and have a single place in your code where you will initialize all the tenant state, group the callables to unset the state, and then return them.
 
 ```php
 <?php

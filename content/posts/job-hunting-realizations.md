@@ -60,6 +60,6 @@ When God exiled Israel into Babylon, there was a tremendous mission he gave his 
 
 The people of Israel were supposed to pray and work for the welfare of the nation that destroyed their homes, separated their families and killed their children. Just let that sink in for a minute...
 
-The world sometimes is a bit hostile to christians, and we are not the most liked of the people in this time of history. Maybe with due reason, because we have been far from being what we are supposed to be. Nonetheless, it would be so easy for us to entrench into our own communities and fend for ourselves with no interest of what happens in the outside world. It is a very conformable way to live. 
+The world sometimes is a bit hostile to christians, and we are not the most liked of the people in this time of history. Maybe with due reason, because we have been far from being what we are supposed to be. Nonetheless, it would be so easy for us to entrench into our own communities and fend for ourselves with no interest of what happens in the outside world. It is a very comfortable way to live. 
 
 But like the Israel of those times, we have a mission. We ought to seek the welfare of this world and the people that live in it. We ought to work for it. We got to make a difference. And work is the means that God provided to serve other people, better their lives and make that difference. That's why is no light decision.

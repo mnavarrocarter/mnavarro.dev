@@ -24,7 +24,7 @@ It is important that my future employer knows and understands this part of my pe
 
 Another of the things I've discovered is the tremendous amount of power a big sum of money can exert into coercing a career decision. It does not matter how many times I try to convince myself I don't need more, and that money is not the most important thing; the reality is that it is pretty hard to reject a bigger sum for any reason. I always seem to want more and more.
 
-Being mostly lacking of money for the majority of my life, I can see how much I've got used to it. I remember my days of being a seminary student in Texas, where I would consider myself fortunate and grateful to have a place where to sleep and food to eat every day: nothing more. In my many visits to the north of Mexico, be for awesome and long youth camps or for building houses with *Casas por Cristo*, I could see the most extreme poverty and need. I recall at some points I used to imagine my life living there forever, amount those people in need, and be happy with the sole thought of being of some use for them. All that seems so far away now.
+Being mostly lacking of money for the majority of my life, I can see how much I've got used to it. I remember my days of being a seminary student in Texas, where I would consider myself fortunate and grateful to have a place where to sleep and food to eat every day: nothing more. In my many visits to the north of Mexico, be for awesome and long youth camps or for building houses with *Casas por Cristo*, I could see the most extreme poverty and need. I recall at some point I used to imagine my life living there forever, among those people in need, and be happy with the sole thought of being of some use for them. All that seems so far away now.
 
 No wonder why Christ said that the root of all evil is the love of money. The question is: Do I love money or I see it as a tool to some other ends?  How do I know for sure? Some people say: "Give some to charity" as if you could somehow buy your peace of mind with was is really and effortless action.
 
@@ -56,10 +56,10 @@ When God exiled Israel into Babylon, there was a tremendous mission he gave his 
 
 > Seek the welfare of the city where I have sent you into exile, and pray to the Lord on its behalf, for in its welfare you will find your welfare.
 >
-> - Jeremiah 29:7
+> ~ Jeremiah 29:7
 
 The people of Israel were supposed to pray and work for the welfare of the nation that destroyed their homes, separated their families and killed their children. Just let that sink in for a minute...
 
-The world sometimes is a bit hostile to christians, and we are not the most liked of the people in this time of history. Maybe with due reason, because we have been far from being what we were supposed to be. Nonetheless, we have a mission. We ought to seek the welfare of this world and the people that live in it. We ought to work for it. We got to make a difference.
+The world sometimes is a bit hostile to christians, and we are not the most liked of the people in this time of history. Maybe with due reason, because we have been far from being what we are supposed to be. Nonetheless, it would be so easy for us to entrench into our own communities and fend for ourselves with no interest of what happens in the outside world. It is a very conformable way to live. 
 
-Work is the means that God provided to serve other people, better their lives and make that difference.
+But like the Israel of those times, we have a mission. We ought to seek the welfare of this world and the people that live in it. We ought to work for it. We got to make a difference. And work is the means that God provided to serve other people, better their lives and make that difference. That's why is no light decision.

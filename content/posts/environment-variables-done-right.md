@@ -6,7 +6,7 @@ tags:
     - php
     - docker
     - development
-draft: true
+draft: false
 date: 2020-07-02T20:00:00+01:00
 ---
 

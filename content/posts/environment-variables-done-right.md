@@ -7,7 +7,7 @@ tags:
     - docker
     - development
 draft: false
-date: 2020-07-02T20:00:00+01:00
+date: 2021-07-02T20:00:00+01:00
 ---
 
 One of the things that I don't like about Laravel is their abusive use of environment variables. I think it sets a bad precedent for when developers need to come up with their own environment variables in their applications. 

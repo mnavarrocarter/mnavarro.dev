@@ -47,7 +47,7 @@ Okay, I'm sure you are getting very impatient and want to get to the "how" of te
 
 Many developers understand all that I've written. So, they take their keyboards and decide that the best way to test the aforementioned things is just by spinning up a temporary web server process, listening in a random port, that is pre-configured to respond to requests mapping certain methods and urls to certain responses. Most people call this a *mock server*.
 
-No blame on them! I've seen this approach being endorsed by really prominent Go developers. And I think it is specially prominent in Go due to the fact that it is indeed very easy to spin up a server in a separate Goroutine.
+No blame on them! I've seen this approach being endorsed by [really prominent Go developers](https://youtu.be/rWBSMsLG8po?t=2413). And I think it is specially prominent in Go due to the fact that it is indeed very easy to spin up a server in a separate Goroutine.
 
 However, this approach is often unnecessary and overly complex. Let me explain why.
 
@@ -188,7 +188,7 @@ func (cl *FakeApiClient) PostInput(ctx context.Context, input *FakeInput) (*Fake
 }
 ```
 
-Now, the only thing I need to test is that I send the correct request and I'm capable to handle all possible responses. That's it. Nothing else.
+Now, the only thing I need to test is that I send the correct request and I'm capable to handle all possible responses or eventual socket errors. That's it. Nothing else.
 
 Sending the the correct request in this case means that the method is correct, the url too, that the body gets serialized to json correctly and that the compulsory headers are present and with the correct values.
 
@@ -272,3 +272,29 @@ If you need a more comprehensive example. You can take a look at [this library I
 [go-transbank]: https://github.com/mnavarrocarter/transbank
 
 [test]: https://github.com/mnavarrocarter/transbank/blob/main/webpay/create_test.go
+
+## Going Solo
+
+Of course, you don't need to use a custom library for testing. As long as you can create your own `http.RoundTripper` (with some assertions about a request and the building of a response) and pass that to the `http.Client` you are using, you'll be fine.
+
+# The Business Answer
+
+Now, all good so far? Well, not so fast! As you know, we are in the real world trying to bring value to our business partners. And they don't care as much about in-memory deterministic testing or testing theory or stuff like that. They want to know the answer to one single and simple question: **will this integration work for the end user**. 
+
+User Acceptance Testing (or UAT) tries to answer that question, and it is a freaking art. This is one of the most difficult tests to automate. We cannot use the tests suites we wrote because we are testing conformity to a spec, remember? Those tests cannot tell us if the integration will work, which is the purpose of UAT.
+
+UAT tests deserve a test suite of their own, usually excluded from running in the normal CI process. They should be run prior to a deployment (usually against a release candidate version) against a real testing/staging environment. Is in this test scenario when it makes sense to hit a real server.
+
+Now, it is not as simple as write some logic and hit the server. It is more complex than that.
+
+You see, now we are dealing with all kind of side effects and statefulness. If we want to test an endpoint called `GET /accounts/123` we need to make sure that the account with id `123` exists in the system before doing that, so we probably need to call `POST /accounts` first with some payload. In almost every UAT test there are some calls that depend on state obtained by other calls. For this reason, UAT test suites usually involve a *journey*. They test a complete flow, from start to finish. They are not isolated tests like your normal Unit Tests. You'll find yourself doing calls, retrieving state and then using that state to do some more calls that will continue to change the state of a server.
+
+Of course, I don't have to mention that this could fail at any point of the journey for some weird reason.
+
+Another thing I've found to be really complex is that environment statefulness makes it really hard to reuse any kind of identifier, because you want to make sure that the test starts with a clean slate every time and you don't know if the third party service testing environment you are using cleans up every day.
+
+Due to their messiness and complexity of implementing them automatically, UAT testing is usually done manually, but this is very prone to errors. At the end of the day, all depends on how complex is the integration you are building. You are in a lucky position if most of the calls of your third party service are idempotent, for example.
+
+---
+
+These are just some of my ideas, beliefs and past experiences with testing. I hope they can make some sense for you and that will guide you to take the best approach you can to test your integrations in Golang. 

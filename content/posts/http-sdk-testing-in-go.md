@@ -17,7 +17,7 @@ If you think about it, it is not an easy question to answer. Maybe you have alre
 
 I believe those differences are due to some preconceived ideas or different definitions about what testing is. For example, some people believe that testing is making sure your code works. The problem with that definition is that it is too vague; "it works" can mean anything.
 
-![works-on-my-machine](https://blog.sergeyev.info/images/works-on-my-machine/the-line.jpg)
+{{< figure src="https://blog.sergeyev.info/images/works-on-my-machine/the-line.jpg" title="Works on my Machine!" >}}
 
 Take, for instance, the following (too familiar) situation: you are told to code a service (or SDK) that integrates with a third party api or http service. As is usual with integrations, confusing or incomplete specs are passed around. Nonetheless, that is sufficient to do your job. You decide to test creating a mock server based on the spec and build your suite to a very good coverage. So far so good. 
 
@@ -37,7 +37,7 @@ So, if we cannot test that our SDK integrates correctly with the service. What d
 
 For instance, if the specification says that we should send an `Authorization` header with some sort of token, we test that (1) A request is created containing the `Authorization` header and (2) that the passed token value is indeed the same that is injected in the header. Similar principles follow for URL, method and body.
 
-The following of a specification does not have to do only with an expectation about the request, but also a correct handling of a response. This means we should also test that our code follows the specification when handling responses. 
+The following of a specification does not have only to do with the expectations about a request, but also with the correct handling of a response. This means we should also test that our code follows the specification when handling responses. 
 
 We should map status codes to certain errors, or react to different content types, or deserialize certain payloads to some types without data loss, etc. We should test that our code does this based on the spec.
 
@@ -53,39 +53,39 @@ However, this approach is often unnecessary and overly complex. Let me explain w
 
 ### We are not testing TCP/TLS/HTTP!
 
-First, there is no send our `*http.Request` over a TCP socket to a server, have the server parse the request and end up with a `*http.Request` again in a completely different process, that will be passed to a handler that will match our request and return a response.
+First, there is no need to send our `*http.Request` over a TCP socket to a server, have the server parse the request and end up with a `*http.Request` again in a completely different process, that then will be passed to a handler that will match our request and return a response.
 
 ```txt
 http.Request --> Http Client --> TCP Socket --> Server --> Http Parser --> http.Request --> handler -> http.Response
 ```
 
-We can simplify this massively, bypassing all the TCP, server stuff and just doing stuff in memory, in a function.
+We can simplify this massively, bypassing all the TCP, server stuff and just doing things in memory, for instance, in a function.
 
 ```txt
 http.Request -> function -> http.Response
 ```
 
-And this is fine, because we are not testing TCP, nor TLS, nor the HTTP protocol. The Go standard library already has tests for all those packages and functions. We care to test *our* code.
+And this is fine, because we are not testing TCP, nor TLS, nor the HTTP protocol. The Go standard library already has tests for all those packages and functions. We want to test *our* code.
 
-So, it is absolutely unnecessary to use a real http request to mocked server to test that our code complies to a spec.
+In order for us to test that our code complies to a spec, there is no need then to spin up a web server.
 
-Plus, something happens with that server, it will be really hard to debug.
+Plus, if something happens with that server, it will be really hard to debug.
 
 ### We are not testing routing!
 
-Even when not using server over TCP mocking techniques, but in memory ones, some people still go with building some kind of in-memory testing "server" that returns responses based on some matching logic. Usually this takes the form of matching the method and the url.
+Even when not using server-over-TCP mocking techniques, but in-memory ones, some people still go with building some kind of in-memory testing "server" that returns responses based on some matching logic. Usually this takes the form of matching the method and the url.
 
 Again, this is completely unnecessary, and it could lead to undesirable side-effects in testing, plus a couple of more issues.
 
 It is unnecessary because, remember, we are testing that our code conforms to a spec. In other words, we are testing that we send a request with the correct contents and that we are capable to handle certain responses. We are not testing routing (that a request with a certain method and URL with gives us a certain response).
 
-This approach usually leads to side effects. Since this massive, respond-to-everything, in-memory mock of a server needs to be configured somewhere, it usually is outside the tested code. If someone changes an id, or accidentally creates another request with the same url.
+This approach usually leads to side effects. Since this massive, respond-to-everything, in-memory mock of a server needs to be configured somewhere, it usually is outside the tested code. If someone changes an id, or accidentally creates another request with the same url there is potential breakage.
 
-Also, there is no clear contract to what should be the response when a request of this mock cannot be matched. This usually weakens error handling code.
+Also, there is no clear contract regarding to what should be the response when a request of this mock cannot be matched. This usually weakens error handling code.
 
-Moreover, a mock like this ignores the fact that some HTTP operations are not idempotent: the same method and url combination can and will give different answers based on the internal state of the server at the time of the call. It is really hard to mock that using this approach.
+Finally, a mock like this ignores the fact that some HTTP operations are not idempotent: the same method and url combination can and will give different answers based on the internal state of the server at the time of the call. It is really hard to mock that using this approach.
 
-It's better not to try to play any matching games and do something deterministic and single use.
+It's better not to try to play any matching games and do something deterministic and straightforward.
 
 # The Practical Answer
 
@@ -263,11 +263,11 @@ You are probably thinking "Oh this thing modifies the global `http.DefaultClient
 
 You can keep on adding more tests in the block, with different payloads and different responses, writing expectations for every case. All the information of the test is in the test itself. No need to chase other files or look in logs from another process.
 
-Also, no side effects. All the state of the world lives there in your test run. Your response will be what the `Return` property indicates will be. No surprises.
+Also, no side effects. All the state of the world lives there in your test run. Your response will be what the `Return` property indicates will be. No surprises. That's how a test should be.
 
 ## Learn By Looking
 
-If you need a more comprehensive example. You can take a look at [this library I'm building][go-transbank]. It's an SDK for a third party http service from Chile called Transbank. One of it's services, Webpay, allows you to integrate with their payment gateway. [I'm using `httpclientmock` to test the integration][test].
+If you need a more comprehensive example. You can take a look at [this library I'm building][go-transbank]. It's an SDK for a third party http service from Chile called Transbank. One of its services, Webpay, allows you to integrate with their payment gateway. [I'm using `httpclientmock` to test the integration][test].
 
 [go-transbank]: https://github.com/mnavarrocarter/transbank
 

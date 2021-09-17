@@ -2,7 +2,6 @@ baseURL = "https://mnavarro.dev/"
 languageCode = "en-GB"
 metaDataFormat = "yaml"
 DefaultContentLanguage = "en"
-theme = "yinyang"
 
 [markup]
   [markup.goldmark]

@@ -1,9 +1,0 @@
-{{ define "main" }}
-<main>
-  <div class="wrapper">
-      {{ range .Paginator.Pages }}
-        {{ partial "post_preview.html" .}}
-      {{ end }}
-  </div>
-</main>
-{{ end }}

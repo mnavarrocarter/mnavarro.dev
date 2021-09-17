@@ -3,11 +3,8 @@ title: Going back to the Monolith well
 subtitle: A plea to go back to do what we should always have done but to do it right this time
 draft: false
 date: 2020-02-20T23:30:00-03:00
-tags:
-     - monolith
-     - oop
-     - software-architecture
-     - microservices
+tags: ["Monolith", "Microservices", "Software Architecture", "OOP"]
+categories: ["Tech"]
 ---
 
 We were extremely warned about the dangers of microservices, but we implement them anyway. Now, we are slowly realizing that we should have never, ever, abandoned the monolith. Our multiple failures at microservices probably speak of two things, (1) we probably lack the workforce and proper Ops team to carry this effort onward and (2) we probably could have solved our problem without them anyway. Note that I'm saying that microservices are fine. I'm also saying that they might have not been for us.

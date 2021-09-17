@@ -3,12 +3,8 @@ title: Efficient Reports in PHP
 subtitle: Leverage the power of unbuffered TCP connections and PHP Generators to do reporting well
 draft: false
 date: 2019-12-10T11:18:48-03:00
-tags:
-    - php
-    - reporting
-    - generators
-    - mysql
-    - pdo
+tags: ["PHP", "Reporting", "CSV", "Advanced PHP", "MYSQL", "PDO"]
+categories: ["Tech"]
 ---
 
 When it comes to reporting, I have a predefined set of rules that I follow sacredly and that will ensure that my report writing experience will be nice and problem-free.

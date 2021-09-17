@@ -3,11 +3,8 @@ title: Unit-testing the filesystem in PHP
 subtitle: Efficiently testing PHP's native filesystem functions without hitting a real filesystem
 draft: false
 date: 2019-12-16T11:18:48-03:00
-tags:
-    - unit-testing
-    - php
-    - filesystem
-    - stream-wrappers
+categories: ["Tech"]
+tags: ["Testing", "PHP", "Filesystem", "Advanced PHP"]
 ---
 
 I used to be a big fan of filesystem abstractions, not only for the abstraction benefit, but also for the testing benefit as well. It is trivial to unit test classes depending in filesystem abstractions like [Flysystem][1] or [Gaufrette][2]: just a simple mock of the interface and we are done.

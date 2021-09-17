@@ -1,0 +1,49 @@
+baseURL = "https://mnavarro.dev/"
+languageCode = "en-GB"
+metaDataFormat = "yaml"
+DefaultContentLanguage = "en"
+theme = "yinyang"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    guessSyntax = true
+    noClasses = true
+    style = "tango"
+    tabWidth = 2
+
+[author]
+  name = "Matias Navarro-Carter"
+  homepage = "https://twitter.com/mnavarrocarter"
+
+[languages]
+  [languages.en]
+    contentDir = "content/en"
+    languageName = "English"
+    weight = 1
+  [languages.es]
+    contentDir = "content/es"
+    languageName = "Spanish"
+    weight = 2
+
+
+[params]
+mainSections = ["posts"]
+headTitle = "Mati's Rants"
+description = "I sound like I'm angry all the time, but I'm a very nice guy. I Promise."
+twitterCards = true
+disqus = "mnavarro"
+
+[[params.socials]]
+name = "About Me"
+link = "/about"
+
+[[params.socials]]
+name = "Media"
+link = "/media"
+
+[[params.socials]]
+name = "Github"
+link = "https://github.com/mnavarrocarter"

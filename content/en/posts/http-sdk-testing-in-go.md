@@ -1,10 +1,8 @@
 ---
 title: Testing HTTP SDKs in Golang
 subtitle: Some thoughts on how to test code that integrates with third party HTTP services and apis
-tags: 
-    - testing
-    - golang
-    - http
+tags: ["Testing", "Golang", "HTTP"]
+categories: ["Tech"]
 draft: false
 date: 2021-09-08T20:00:00+01:00
 ---

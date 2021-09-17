@@ -2,7 +2,7 @@
 title: "Media"
 date: 2020-01-10T16:50:09-03:00
 draft: false
-url: /media
+type: page
 ---
 
 ## Talks and Workshops
@@ -11,7 +11,7 @@ Sometimes, nice people take a video when I talk about cool things. That is nice 
 
 - [Event Sourcing Applied - DevFest, Santiago CL, Oct-2019](https://www.youtube.com/watch?v=uJEd4HFXxvY&t=1s)
 - [Container Theory and Docker - Option SpA, Santiago CL, Dec-2019](https://www.youtube.com/watch?v=NJtal-GRNjc&t=3933s)
-- [Golang 101 - Option Academy Workshop, Sept 2021](https://my.demio.com/recording/gr5B96ZE)
+- [Golang 101 - Option Academy Workshop, Sept 2021](https://youtu.be/mwg337neKGM)
 
 ## The Chilean Nerd
 

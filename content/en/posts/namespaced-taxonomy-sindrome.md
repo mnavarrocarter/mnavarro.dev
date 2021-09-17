@@ -1,11 +1,8 @@
 ---
 title: Namespaced Taxonomy Syndrome
 subtitle: Correcting bad habits and wrong assumptions in the use of PHP Namespaces
-tags: 
-    - php
-    - oop
-    - namespaces
-    - laravel
+categories: ["Tech"]
+tags: ["PHP", "OOP", "Namespaces", "Laravel"] 
 draft: false
 date: 2020-07-20T20:00:00+01:00
 ---

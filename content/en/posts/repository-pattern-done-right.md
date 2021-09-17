@@ -2,11 +2,8 @@
 title: Repository Pattern Done Right
 subtitle: My long take on how to implement repositories in an abstract, collection-like, immutable way
 draft: false
-tags:
-- php
-- oop
-- repository
-- orm
+categories: ["Tech"]
+tags: ["PHP", "OOP", "ORM", "DDD", "Advanced PHP"]
 date: 2020-02-17T20:00:00-03:00
 ---
 

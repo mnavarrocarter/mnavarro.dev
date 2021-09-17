@@ -2,7 +2,7 @@
 title: "About Me"
 date: 2020-01-10T12:19:53-03:00
 draft: false
-url: /about
+type: page
 ---
 
 I'm [Matías](https://www.youtube.com/watch?v=V5Uhtmhj8VQ), a PHP Jedi Master based in the UK. I'm an skilled Backend Web Developer but I can also do frontend. I also develop in Node JS. [I'm currently learning a bit of Go](https://www.instagram.com/p/CGSkARhHWou/).

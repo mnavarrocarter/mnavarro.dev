@@ -1,10 +1,8 @@
 ---
 title: Preventing tenant pollution in multitenant applications
 subtitle: Or how to make your multi tenant application tenant unaware
-tags: 
-    - oop
-    - php
-    - multitenancy
+categories: ["Tech"]
+tags: ["PHP", "OOP", "Multitenancy"]
 draft: false
 date: 2021-06-06T00:00:00+01:00
 ---

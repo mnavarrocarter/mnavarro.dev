@@ -1,9 +1,8 @@
 ---
 title: Yubikeying your digital life
 subtitle: A comprehensive guide on how to setup your Yubikey for most of the things you can do with it in 2021
-tags: 
-    - yubikey
-    - security
+categories: ["Tech"]
+tags: ["Yubikey", "Security", "Linux"]
 draft: true
 date: 2020-10-15T01:00:00+01:00
 ---

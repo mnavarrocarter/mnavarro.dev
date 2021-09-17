@@ -1,9 +1,8 @@
 ---
 title: Advice for junior project saboteurs
 subtitle: A set of techniques to ensure that your project fails in every possible way
-tags: 
-    - project-management
-    - programming
+tags: ["Project Management", "Agile"]
+categories: ["Tech"]
 draft: false
 date: 2021-05-16T18:08:00+00:00
 ---

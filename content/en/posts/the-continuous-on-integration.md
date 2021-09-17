@@ -3,10 +3,8 @@ title: Getting Continuous Integration right
 subtitle: Because "Continuous Integration" is more about "Continuous" than "Integration"
 draft: false
 date: 2020-02-26T16:30:00-03:00
-tags:
-    - best-practices
-    - continuous-integration
-    - git
+categories: ["Tech"]
+tags: ["Good Practices", "CI", "CD", "Git", "Gitops"]
 ---
 
 I've participated in a good number of projects in my short life as a developer. Luckily, when I started in this business, `git` was a thing already and was one of the first tools I learned to use. I often wonder how anyone was able to build software in the past without it.

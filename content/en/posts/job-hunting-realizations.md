@@ -1,9 +1,8 @@
 ---
 title: Job Hunting Realizations
 subtitle: Some personal notes on my recent going out into the job market and what I've learned in the process
-tags: 
-    - personal
-    - work
+tags: ["Work", "Meaning", "Fulfillment"]
+categories: ["Thought"]
 draft: false
 date: 2021-06-10T01:00:00+01:00
 ---

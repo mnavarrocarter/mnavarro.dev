@@ -1,10 +1,8 @@
 ---
-title: When to use interfaces
+title: When to use Interfaces
 subtitle: A rant about using and thus, abusing, interfaces for everything
-tags: 
-    - oop
-    - php
-    - design
+categories: ["Tech"]
+tags: ["OOP", "PHP", "Design"]
 draft: false
 date: 2021-06-07T00:00:00+01:00
 ---

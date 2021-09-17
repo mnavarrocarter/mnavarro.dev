@@ -1,12 +1,8 @@
 ---
 title: Entendiendo Versionamiento Semántico
 subtitle: O por qué 1.0 no significa que una librería es mala.
-tags: 
-    - php
-    - semver
-    - oop
-    - composer
-    - libraries
+categories: ["Tech"]
+tags: ["PHP", "Semver", "OOP", "Composer", "Dependency Management"]
 draft: false
 date: 2019-10-12T11:18:48-03:00
 ---

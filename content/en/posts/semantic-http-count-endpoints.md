@@ -1,10 +1,8 @@
 ---
 title: Implementing count endpoints using semantic HTTP
 subtitle: How to take advantage of the features already available in HTTP to implement count functionality in your apis.
-tags: 
-    - http
-    - rest
-    - apis
+categories: ["Tech"]
+tags: ["HTTP", "REST", "API"]
 draft: false
 date: 2020-10-15T01:00:00+01:00
 ---

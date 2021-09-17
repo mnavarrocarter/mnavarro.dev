@@ -1,13 +1,10 @@
 ---
-title: Un nuevo SDK de Transbank
+title: Un Nuevo SDK de Transbank
 subtitle: Implementar Webpay en PHP acaba de volverse extremadamente fácil
 draft: false
 date: 2020-01-07T11:18:48-03:00
-tags:
-     - open-source
-     - transbank
-     - php
-     - composer
+categories: ["Tech"]
+tags: ["OSS", "Transbank", "PHP"]
 ---
 
 Si has usado el SDK de Transbank para PHP quizás entiendas la frustación que me motivó a escribir un nuevo SDK no oficial. Hace mucho tiempo que tenía este proyecto en mente y decidí que el mundo no podía comenzar otra década sin un nuevo SDK de Transbank. 
@@ -52,6 +49,7 @@ Decidí partir implementando Webpay para lograr un MVP. Haciendo a un lado todos
 
 ```php
 <?php
+
 interface WebpayClient
 {
     public function startTransaction(Transaction $transaction): StartTransactionResponse;
@@ -70,6 +68,7 @@ La clase `Transaction` es la principal aquí. Intenté modelarla tal y como el w
 
 ```php
 <?php
+
 use BetterTransbank\SDK\Webpay\Message\Transaction;
 
  // Creamos la transacción con las url
@@ -169,6 +168,7 @@ Por ejemplo, para hacer las redirecciones especiales que requiere Webpay (formul
 
 ```php
 <?php
+
 $response = $webpay->startTransaction($transaction);
 
 PaymentForm::prepare($response)->send(); // Renderiza el formulario de pago y envía headers HTTP como respuesta
@@ -178,6 +178,7 @@ Además, puedes conectarte a cualquier parte del proceso de pago usando una impl
 
 ```php
 <?php
+
 use BetterTransbank\SDK\Webpay\SoapWebpayClient;
 use BetterTransbank\SDK\Webpay\Psr14\Psr14WebpayClient;
 
@@ -192,6 +193,7 @@ con capacidades de logger. Necesitarás una implementación que use la interfaz 
 
 ```php
 <?php
+
 use BetterTransbank\SDK\Soap\LoggerTransbankSoapClient;
 use BetterTransbank\SDK\Webpay\SoapWebpayClient;
 use BetterTransbank\SDK\Webpay\WebpayCredentials;

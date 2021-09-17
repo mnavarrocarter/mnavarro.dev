@@ -1,8 +1,3 @@
-baseURL: "https://mnavarro.dev/"
-languageCode: "en-GB"
-title: "mnavarro.dev"
-metaDataFormat: "yaml"
-
 pygmentsUseClassic: true
 pygmentsUseClasses: true
 pygmentsCodeFences: true

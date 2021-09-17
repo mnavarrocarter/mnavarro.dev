@@ -3,13 +3,8 @@ title: "The case for Object Mapping"
 subtitle: A series of reasons why working with objects mapped from the persistence layer is always better than using raw PHP arrays (hash maps)
 draft: false
 date: 2020-04-28T20:00:00-00:00
-tags:
-    - orm
-    - data-structures
-    - software-architecture
-    - php
-    - design
-    - oop
+categories: ["Tech"]
+tags: ["ORM", "Data Structures", "Software Architecture", "PHP", "Design", "OOP"]
 ---
 
 ## Introduction: A Tale of Simplicity VS Complexity

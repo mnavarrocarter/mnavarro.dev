@@ -1,11 +1,8 @@
 ---
 title: Environment Variables Done Right
 subtitle: Some advice and guidelines to keep your environment variables under control
-tags: 
-    - env
-    - php
-    - docker
-    - development
+categories: ["Tech"]
+tags: ["PHP", "Docker", "Development", "12 Factor"] 
 draft: false
 date: 2021-07-02T20:00:00+01:00
 ---

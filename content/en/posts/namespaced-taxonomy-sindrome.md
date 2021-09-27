@@ -15,7 +15,9 @@ I was surfing YouTube for good coding talks and one caught my attention. It was 
 
 It was a brilliant talk. I didn't really agree much with his "less lines of code is better" philosophy. But he had some excellent points about the misuse (overuse) of some OOP features, specifically about namespaces and classes. But the part that struck me was [something he quoted about nine minutes into the talk][video]:
 
-	~ Namespaces are for preventing name collisions, not for creating taxonomies.
+> Namespaces are for preventing name collisions, not for creating taxonomies.
+> 
+> ~ Jack Diederich
 
 That really blew my mind. I felt guilty. I have absolutely misused namespaces basically since I started in OOP. I've done the `use MuffinMail\MuffinHash\MuffinHash` thing. What he is describing is what I've decided to call **Namespaced Taxonomy Syndrome**. Every single PHP project does this thing. It's everywhere.
 

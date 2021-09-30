@@ -67,10 +67,10 @@ I think we need a bit more objective advice on how to do this.
 DRY as an acronym was coined with a purpose. A purpose most people seem to ignore.
 Why DRY is good? Because if you have to correct or fix duplicated code in the future,
 it will be harder to do, because you will have to change it in the multiple places it was copied.
-Why is WET or AHA good? Because it you choose the wrong abstraction and then need to change it, it will be harder
-to do so in teh future.
+Why is WET or AHA good? Because if you choose the wrong abstraction and then need to change it, it will be harder
+to do so in the future.
 
-For me, there is just one only rule to follow when writing code. Is not an easy one:
+For me, there is just only one rule to follow when writing code. Is not an easy one:
 most of the time you'll have to figure out the answer and some times you'll get
 it wrong. The application of this rule can take many forms and faces, and so it
 will require you to be wise. Here it is:
@@ -118,7 +118,7 @@ does not. Let me explain.
 
 One thing is to try to anticipate, another very different one is to know in
 advance. Some people confuse the two of them and they say: "Since I cannot know
-in advance, it is pointless to anticipate". There could't be more wrong.
+in advance, it is pointless to anticipate". They couldn't be more wrong.
 
 Only God knows in advance, we agree on that. The purpose of anticipation is not
 knowing, is preparing. We read signs of things that might happen so we can be
@@ -183,12 +183,12 @@ Remember, the goal is that we want code that is not hard to change.
 Sometimes, people talk about picking the wrong abstraction early as the worst mistake
 you can possibly do.
 
-I've done this so many times, and it really not that terrible at all and quite
+I've done this so many times, and it is not that terrible at all and quite
 simple to correct. I have many stories about this.
 
 I once coded an interface for money conversion in a project I was doing. 
 It was very simple. It was called `MoneyConverter` and has one method
-`Convert`. It took `Money` instance and a currency as arguments and returned a
+`Convert`. It took a `Money` instance and a currency as arguments and returned a
 new `Money` instance with the converted amount.
 
 I implemented that using an external api, but that does not matter. This is how
@@ -203,8 +203,8 @@ interface MoneyConverter
 }
 ```
 
-My client code just used that. Never knew anything about an api or anything like
-that.
+My client code just used that. Never knew anything about an api or any other implementation
+detail.
 
 It was a good idea until someone said "We need to display to the user the conversion
 rate in which the conversion was made." Too bad for me, my interface did not
@@ -239,7 +239,7 @@ something very reasonable to ask and expect. If I ever write a conversion servic
 again it will always expose this information by default.
 
 Second is, was it a hard change? For me in this project, it wasn't. And I think
-here is where all the fears of coming up with the wrong abstraction come from. It
+here it is where all the fears of coming up with the wrong abstraction come from. It
 was very easy for me to spot all the places where I had to change this because
 I had all the code using the interface covered with tests, as well as the
 implementation using the Api. As soon as I changed the interface and the

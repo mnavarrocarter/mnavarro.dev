@@ -1,1 +1,113 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSV on</title><link>https://mnavarro.dev/tags/csv/</link><description>Recent content in CSV on</description><generator>Hugo -- gohugo.io</generator><language>en-GB</language><lastBuildDate>Tue, 10 Dec 2019 11:18:48 -0300</lastBuildDate><atom:link href="https://mnavarro.dev/tags/csv/index.xml" rel="self" type="application/rss+xml"/><item><title>Efficient Reports in PHP</title><link>https://mnavarro.dev/posts/php-efficient-reporting/</link><pubDate>Tue, 10 Dec 2019 11:18:48 -0300</pubDate><guid>https://mnavarro.dev/posts/php-efficient-reporting/</guid><description>&lt;p>When it comes to reporting, I have a predefined set of rules that I follow sacredly and that will ensure that my report writing experience will be nice and problem-free.&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CSV on The Chilean Nerd</title><link>https://mnavarro.dev/tags/csv/</link><description>Recent content in CSV on The Chilean Nerd</description><generator>Hugo -- gohugo.io</generator><language>en-GB</language><copyright>©2019 Matias Navarro Carter. CC-BY-SA.</copyright><lastBuildDate>Tue, 10 Dec 2019 11:18:48 -0300</lastBuildDate><atom:link href="https://mnavarro.dev/tags/csv/index.xml" rel="self" type="application/rss+xml"/><item><title>Efficient Reports in PHP</title><link>https://mnavarro.dev/posts/php-efficient-reporting/</link><pubDate>Tue, 10 Dec 2019 11:18:48 -0300</pubDate><guid>https://mnavarro.dev/posts/php-efficient-reporting/</guid><description>&lt;p>When it comes to reporting, I have a predefined set of rules that I follow sacredly and that will ensure that my report writing experience will be nice and problem-free.&lt;/p></description><content>&lt;p>When it comes to reporting, I have a predefined set of rules that I follow sacredly and that will ensure that my report writing experience will be nice and problem-free.&lt;/p>
+&lt;ol>
+&lt;li>Do not use ORMs&lt;/li>
+&lt;li>Use non-buffered TCP connections&lt;/li>
+&lt;li>Use PHP generators with abstractions&lt;/li>
+&lt;li>Prefer easy-to-stream content types&lt;/li>
+&lt;/ol>
+&lt;p>There you have! My promise is that if you follow these simple four rules, your report writing experience will be much more pleasant and your application will work on them more efficiently. Let&amp;rsquo;s review these rules one by one:&lt;/p>
+&lt;h2 id="1-do-not-use-orms">1. Do not use ORMs&lt;/h2>
+&lt;p>ORMs, as indicated in the meaning of their acronym, have a very specific purpose. That purpose is to map relational database tables to the objects that contain our business logic. This is so we can abstract away persistence details and focus in expressing our domain in code. But a report is neither a domain action or a business rule. It&amp;rsquo;s just a report: some business guy wants to see data on an spreadsheet.&lt;/p>
+&lt;p>Anything we use the ORM for that is not related to the purpose stated above constitutes a wrong use of the ORM. ORMs were designed for nothing else than domain objects mapping.&lt;/p>
+&lt;p>If I load the ORM with ten thousand rows worth of database records, I&amp;rsquo;m not going to even reach a thousand before my script runs out of memory. This is because most ORMs have a in-memory cache of some sort, and also because objects consume more memory than more simpler data types, like hash maps or arrays. Some terrible things I&amp;rsquo;ve seen developers do to solve this is to increase the default memory limit of the application (worst idea ever) or to clear the memory cache of the Entity Manager every X iterations (not that bad, but still not the right thing to do).&lt;/p>
+&lt;p>Even when you can get around the memory issue, you still are putting your system under a lot of stress because of all the mapping logic. Just stop there and ask yourself the question &amp;ldquo;Do I really need hydrated objects for this?&amp;rdquo; You&amp;rsquo;ll find that the answer is, in 99% of cases, no.&lt;/p>
+&lt;p>This is really all you need.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">interface&lt;/span> &lt;span style="color:#a6e22e">UserReporter&lt;/span>
+{
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">activeUsers&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">iterable&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">inactiveUsers&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">iterable&lt;/span>;
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>You don&amp;rsquo;t need anything more complex than this. Implement it in PDO or any other database library, perform the necessary translations/normalizations, and return an iterable of some sort. You&amp;rsquo;ll be amazed of how easy and efficient this approach is.&lt;/p>
+&lt;h2 id="2-use-non-buffered-tcp-connections">2. Use non-buffered TCP connections&lt;/h2>
+&lt;p>TCP connections are slow (this compared to writing in the host&amp;rsquo;s filesystem, for example). So almost every database client that I know uses something that is called buffering. In PDO, for example, this works by accumulating the resultset of a query in the database memory, and once is done, flush it all to the client requesting the data over the TCP socket. This means that in PHP, every time you are querying something, your are loading the whole result in memory.&lt;/p>
+&lt;p>Now, depending of the size of your table, this may also kill your application. If your table is 5 GB and you are dumping all its records into a csv file, that is going to allocate 5 Gb in your app&amp;rsquo;s memory. I remember the first time I encountered this problem working for a client. They had a database with the amount in MW of the electricity generated by every single electrical generation plant in Chile, every hour, over the span of 5 years. In Chile there are around 150 electrical generation plants and there are 8760 hours in a year, so that table had close to 6.127.000 records, each record roughly weighing 1 kb. That sole table was around 6 GB. Of course that wen I tried to allocate that much memory into my system it was going to crash.&lt;/p>
+&lt;p>Reports like this can easily kill your app if you are not cautious. In cases like this, is always good to buffer the results as they happen over the TCP connection. In PDO, you can do this by disabling buffering in queries:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+$pdo&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">setAttribute&lt;/span>(&lt;span style="color:#a6e22e">PDO&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">MYSQL_ATTR_USE_BUFFERED_QUERY&lt;/span>, &lt;span style="color:#66d9ef">false&lt;/span>);
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Then you iterate over your resultset and you will get every record as it is found, keeping your memory usage very low at the cost of less speed and a bit more CPU.&lt;/p>
+&lt;p>You can read more about non-buffered queries in PDO &lt;a href="https://phpdelusions.net/pdo#mysqlnd">here&lt;/a>&lt;/p>
+&lt;h2 id="3-use-php-generators-with-abstractions">3. Use PHP generators with abstractions&lt;/h2>
+&lt;p>Is of little use if you disable buffering your query to put every result into an array and continue with it. What you want here is the power of generators.&lt;/p>
+&lt;p>I&amp;rsquo;m not going to explain in detail what they are. For that you can read &lt;a href="https://nikic.github.io/2012/12/22/Cooperative-multitasking-using-coroutines-in-PHP.html">the amazing blog post that Nikita Popov wrote about them&lt;/a>. I&amp;rsquo;m going to say that a generator is a special kind of iterator that yields the items of an iteration without necessarily know the whole iterable structure in advance.&lt;/p>
+&lt;p>They fit very well our case for the non-buffered queries in PDO, because we do not know the whole resultset in advance, so we can yield values as they reach our server.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">UserReporter&lt;/span> {
+&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#a6e22e">PDO&lt;/span> $pdo;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __construct(&lt;span style="color:#a6e22e">PDO&lt;/span> $pdo) {
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">pdo&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $pdo;
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">activeUsers&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Iterator&lt;/span> {
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">pdo&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">setAttribute&lt;/span>(&lt;span style="color:#a6e22e">PDO&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">MYSQL_ATTR_USE_BUFFERED_QUERY&lt;/span>, &lt;span style="color:#66d9ef">false&lt;/span>);
+$stmt &lt;span style="color:#f92672">=&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">pdo&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">prepare&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;SELECT * FROM `users` WHERE `status` = &amp;#39;active&amp;#39;&amp;#34;&lt;/span>);
+&lt;span style="color:#66d9ef">if&lt;/span> (&lt;span style="color:#f92672">!&lt;/span>$stmt&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">execute&lt;/span>()) {
+&lt;span style="color:#66d9ef">throw&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">RuntimeException&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;Query error&amp;#39;&lt;/span>);
+}
+&lt;span style="color:#66d9ef">while&lt;/span> ($row &lt;span style="color:#f92672">=&lt;/span> $stmt&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">fetch&lt;/span>(&lt;span style="color:#a6e22e">PDO&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">FETCH_ASSOC&lt;/span>)) {
+&lt;span style="color:#66d9ef">yield&lt;/span> $row; &lt;span style="color:#75715e">// This is the keyword!!
+&lt;/span>&lt;span style="color:#75715e">&lt;/span> }
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>When a function has the yield keyword inside it, their return value will be an &lt;code>Iterator&lt;/code> (specifically, a &lt;code>Generator&lt;/code> instance), and every iteration will return the next yielded value. So, when &lt;code>Iterator::next()&lt;/code> is called, code will be executed until a yield is found, and that will be the return value. The code yielding will be paused until the &lt;code>Iterator::next()&lt;/code> is called, and it will continue where it was the last time, until there are no more yields.&lt;/p>
+&lt;p>This is a powerful feature, useful to implement streams, data transformation pipelines and even coroutines (as Nikita&amp;rsquo;s blog post shows). You can compose iterables over iterables to create cool pipelines and process your report data separating concerns effectively.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">UppercaseNames&lt;/span> &lt;span style="color:#66d9ef">implements&lt;/span> &lt;span style="color:#a6e22e">IteratorAggregate&lt;/span>
+{
+&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#a6e22e">iterable&lt;/span> $iterable;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __construct(&lt;span style="color:#a6e22e">iterable&lt;/span> $iterable)
+{
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">iterable&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $iterable;
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">getIterator&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Iterator&lt;/span>
+{
+&lt;span style="color:#66d9ef">foreach&lt;/span> ($this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">iterable&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> $item) {
+&lt;span style="color:#75715e">// Transform the data and then yield
+&lt;/span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> $transformedItem;
+}
+}
+}
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">NormalizeEmails&lt;/span> &lt;span style="color:#66d9ef">implements&lt;/span> &lt;span style="color:#a6e22e">IteratorAggregate&lt;/span>
+{
+&lt;span style="color:#66d9ef">private&lt;/span> $iterable;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __construct(&lt;span style="color:#a6e22e">iterable&lt;/span> $iterable)
+{
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">iterable&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $iterable;
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">getIterator&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Iterator&lt;/span>
+{
+&lt;span style="color:#66d9ef">foreach&lt;/span> ($this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">iterable&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> $item) {
+&lt;span style="color:#75715e">// Transform the data and then yield
+&lt;/span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> $transformedItem;
+}
+}
+}
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">TranslateFields&lt;/span> &lt;span style="color:#66d9ef">implements&lt;/span> &lt;span style="color:#a6e22e">IteratorAggregate&lt;/span>
+{
+&lt;span style="color:#66d9ef">private&lt;/span> $iterable;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __construct(&lt;span style="color:#a6e22e">iterable&lt;/span> $iterable)
+{
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">iterable&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $iterable;
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">getIterator&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Iterator&lt;/span>
+{
+&lt;span style="color:#66d9ef">foreach&lt;/span> ($this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">iterable&lt;/span> &lt;span style="color:#66d9ef">as&lt;/span> $item) {
+&lt;span style="color:#75715e">// Transform the data and then yield
+&lt;/span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> $transformedItem;
+}
+}
+}
+$pipeline &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">UppercaseNames&lt;/span>(&lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">NormalizeEmails&lt;/span>(&lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">TranslateFields&lt;/span>($userReporter&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">activeUsers&lt;/span>())));
+&lt;span style="color:#66d9ef">foreach&lt;/span> ($pipeline &lt;span style="color:#66d9ef">as&lt;/span> $item) {
+&lt;span style="color:#75715e">// Write in a csv or something
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Who needs ETL processing libraries when you have the power of Generators at your disposal? 🤓️&lt;/p>
+&lt;figure class="left" >
+&lt;img src="https://media.giphy.com/media/11ahZZugJHrdLO/giphy-downsized.gif" />
+&lt;/figure>
+&lt;h2 id="4-prefer-easy-to-stream-content-types">4. Prefer easy-to-stream content types&lt;/h2>
+&lt;p>One of the first things I ask when someone asks me to dump a report from a set of SQL tables is &amp;ldquo;Can the report be a CSV?&amp;quot;, most of the time the answer is an annoying no, because is too complex for the business guy to import a csv file into excel (really?). But I try to make my point anyways.&lt;/p>
+&lt;p>Every content type structured as a tree is hard to stream, specially in PHP. I&amp;rsquo;m mainly talking about &lt;code>xml&lt;/code> and &lt;code>json&lt;/code> here. As you might know, an excel file is just compressed xml. Even really good libraries like &lt;a href="https://opensource.box.com/spout/">&lt;code>box/spout&lt;/code>&lt;/a> have to do some in-memory cache or temp file gymnastics to stream &lt;code>.xlsx&lt;/code> files. Json files can be streamed as well, but not using the native json extension functions. For streaming json in PHP you should use &lt;a href="https://github.com/violet-php/streaming-json-encoder">&lt;code>violet-php/streaming-json-encoder&lt;/code>&lt;/a>. But the most simple of all formats is the beautiful csv. Just line by line streaming: forget about parsing and reading byte per byte.&lt;/p>
+&lt;p>The reason to prefer streams is because, potentially, you will be sending this somewhere else: be an object storage or a client over HTTP. Trust me, you want to stream that.&lt;/p>
+&lt;p>I&amp;rsquo;ve seen applications that when I click &amp;ldquo;Download Report&amp;rdquo; it waits for like three whole minutes until the browser downloading tray icon pops, and then takes a second to download. This is because most reports build the file in-memory or disk, and then send it to the client when is done. This is poor UX. Let the user know at least that you are sending data to him/her by streaming the content, and not making him/her wait for three minutes.&lt;/p>
+&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>Writing reports is one of the most boring tasks of a developer, but happens to be one of the most common ones. Do it well, and you&amp;rsquo;ll save yourself a lot of time that you can use in doing other, more interesting things. Besides, you&amp;rsquo;ll learn a thing or two about streaming, generators and TCP connections. 🙂️&lt;/p></content></item></channel></rss>

@@ -1,2 +1,431 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ORM on</title><link>https://mnavarro.dev/tags/orm/</link><description>Recent content in ORM on</description><generator>Hugo -- gohugo.io</generator><language>en-GB</language><lastBuildDate>Tue, 28 Apr 2020 20:00:00 +0000</lastBuildDate><atom:link href="https://mnavarro.dev/tags/orm/index.xml" rel="self" type="application/rss+xml"/><item><title>The case for Object Mapping</title><link>https://mnavarro.dev/posts/the-case-for-object-mapping/</link><pubDate>Tue, 28 Apr 2020 20:00:00 +0000</pubDate><guid>https://mnavarro.dev/posts/the-case-for-object-mapping/</guid><description>Introduction: A Tale of Simplicity VS Complexity NOTE: Every time the word array is used in this article I&amp;rsquo;m referring to the PHP definition of this term. You can also consider that term equivalent, for the purposes of this article only, to use instances of stdClass or instances of classes that contain dynamic public properties, like Active Record Models. This is because the deficiencies pointed with arrays apply to those constructs as well.</description></item><item><title>Repository Pattern Done Right</title><link>https://mnavarro.dev/posts/repository-pattern-done-right/</link><pubDate>Mon, 17 Feb 2020 20:00:00 -0300</pubDate><guid>https://mnavarro.dev/posts/repository-pattern-done-right/</guid><description>The repository pattern is one of the most well established patterns in Domain Driven Design. It&amp;rsquo;s origins can be traced as early as when Object Oriented Programing was born.
-Of course, like it happens with almost every pattern or tool, you can really use it terribly the first time (or even the second, or the third one). The only way to improve upon that is good literature and seeing other, more appropriate, uses of the pattern/tool.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ORM on The Chilean Nerd</title><link>https://mnavarro.dev/tags/orm/</link><description>Recent content in ORM on The Chilean Nerd</description><generator>Hugo -- gohugo.io</generator><language>en-GB</language><copyright>©2019 Matias Navarro Carter. CC-BY-SA.</copyright><lastBuildDate>Tue, 28 Apr 2020 20:00:00 +0000</lastBuildDate><atom:link href="https://mnavarro.dev/tags/orm/index.xml" rel="self" type="application/rss+xml"/><item><title>The case for Object Mapping</title><link>https://mnavarro.dev/posts/the-case-for-object-mapping/</link><pubDate>Tue, 28 Apr 2020 20:00:00 +0000</pubDate><guid>https://mnavarro.dev/posts/the-case-for-object-mapping/</guid><description>Introduction: A Tale of Simplicity VS Complexity NOTE: Every time the word array is used in this article I&amp;rsquo;m referring to the PHP definition of this term. You can also consider that term equivalent, for the purposes of this article only, to use instances of stdClass or instances of classes that contain dynamic public properties, like Active Record Models. This is because the deficiencies pointed with arrays apply to those constructs as well.</description><content>&lt;h2 id="introduction-a-tale-of-simplicity-vs-complexity">Introduction: A Tale of Simplicity VS Complexity&lt;/h2>
+&lt;blockquote>
+&lt;p>NOTE: Every time the word &lt;strong>array&lt;/strong> is used in this article I&amp;rsquo;m referring to the PHP definition of this term. You can also consider that term equivalent, for the purposes of this article only, to use instances of &lt;code>stdClass&lt;/code> or instances of classes that contain dynamic public properties, like Active Record Models. This is because the deficiencies pointed with arrays apply to those constructs as well.&lt;/p>
+&lt;/blockquote>
+&lt;p>The selling point for PHP in its early days was simplicity. It promised an escape from the complex ways of Java, .NET and others, that felt too cumbersome for people that wanted to do simple tiny scripts. The promise was that you didn&amp;rsquo;t need to think about data structures, memory allocation, objects, inheritance, third party libraries and so on and so forth if all you wanted was to dynamically render a bit of content on a page.&lt;/p>
+&lt;p>The problem is that PHP grew in popularity. People started to ask more and more functionality to be able to do more advanced things, and somehow the language grew in a very un-organic way; but that&amp;rsquo;s another story. The point I&amp;rsquo;m trying to make is that PHP ceased to be used for simple scripts. Complex enterprise-scale applications are being built in PHP nowadays. And suddenly, we realized that this language that was so friendly for small and simple stuff, is not that friendly for big and &lt;em>enterprisy&lt;/em> things: at least not used in the traditional ways.&lt;/p>
+&lt;p>This is the reason why the PHP Internals team has been investing a lot of development time in features that would make the language more reliable, like runtime type checking and improved object oriented support. The fact that the language was being heavily used for large-scale applications led to the realization that we needed more appropriate features to support that use.&lt;/p>
+&lt;p>This is not a PHP-only realization. The story of Javascript is quite similar. Javascript, as a language, was conceived to make your mouse drop color sparks on movement, or your home banner to drop snow in december. But since its port to the backend by the Node JS runtime, Javascript developers used it to build complex stuff. They realized too that the language was also very unreliable for large-scale business-process-style projects; hence Typescript.&lt;/p>
+&lt;p>This new push for types and oop features in languages whose initial premise of existence was to get rid of all that &lt;strong>unnecessary complexity&lt;/strong> should not be left unnoticed. We have valuable lessons to learn here.&lt;/p>
+&lt;p>Maybe the lesson is that choosing the simpler solution to a problem only gets you that far. When the problem grows in complexity, the simple approach cannot really cope and, in a glorious paradox, mutates into a complexity monster itself. And maybe the other lesson that we can learn is that costs more time and effort to move to a complex approach from a simpler one, than the other way around.&lt;/p>
+&lt;p>But you are right. This, at the end of the day, is mere narrative. So I want to tackle this issue with a practical, very common case. The case of object mapping.&lt;/p>
+&lt;h2 id="arrays-vs-objects">Arrays VS Objects&lt;/h2>
+&lt;p>There are mainly two approaches when working with databases in PHP nowadays. You can either design DAO classes that will contain queries that will fetch you the data that you need in arrays; or you can build your persistence layer on top of an ORM and map those database queries results into well defined classes/objects.&lt;/p>
+&lt;p>The simpler, faster, more straightforward route is the first one, by far. Here is a comparison in implementation with code. Let&amp;rsquo;s go with the DAO/array approach:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">UserDAO&lt;/span>
+{
+&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#a6e22e">PDO&lt;/span> $pdo;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __construct(&lt;span style="color:#a6e22e">PDO&lt;/span> $pdo)
+{
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">pdo&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $pdo;
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">getUserById&lt;/span>(&lt;span style="color:#a6e22e">string&lt;/span> $id)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#66d9ef">array&lt;/span>
+{
+$stmt &lt;span style="color:#f92672">=&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">pdo&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">prepare&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;SELECT * FROM users WHERE id = :id&amp;#39;&lt;/span>)
+&lt;span style="color:#66d9ef">if&lt;/span> ($stmt&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">execute&lt;/span>([&lt;span style="color:#e6db74">&amp;#39;id&amp;#39;&lt;/span> &lt;span style="color:#f92672">=&amp;gt;&lt;/span> $id]) &lt;span style="color:#f92672">!==&lt;/span> &lt;span style="color:#66d9ef">true&lt;/span>) {
+&lt;span style="color:#66d9ef">throw&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">QueryError&lt;/span>();
+}
+&lt;span style="color:#66d9ef">return&lt;/span> $stmt&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">fetch&lt;/span>(&lt;span style="color:#a6e22e">PDO&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">FETCH_ASSOC&lt;/span>);
+}
+}
+$pdo &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">PDO&lt;/span>(&lt;span style="color:#e6db74">/** Connection details here **/&lt;/span>);
+$dao &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">UserDAO&lt;/span>($pdo);
+$user &lt;span style="color:#f92672">=&lt;/span> $dao&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">getUserById&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;some-id&amp;#39;&lt;/span>);
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now, the object mapping approach (Using Doctrine ORM):&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#75715e">// First, you need to create your entity class with annotations
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @Entity
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">User&lt;/span>
+{
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @Id
+&lt;/span>&lt;span style="color:#e6db74"> * @Column(type=&amp;#34;integer&amp;#34;)
+&lt;/span>&lt;span style="color:#e6db74"> * @GeneratedValue
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#a6e22e">int&lt;/span> $id;
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @Column(type=&amp;#34;string&amp;#34;)
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#a6e22e">string&lt;/span> $username;
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @Column(type=&amp;#34;string&amp;#34;)
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#a6e22e">string&lt;/span> $password;
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @Column(type=&amp;#34;string&amp;#34;)
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#a6e22e">string&lt;/span> $email;
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @Column(type=&amp;#34;datetime&amp;#34;)
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#a6e22e">DateTimeInterface&lt;/span> $registeredAt;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __construct(
+&lt;span style="color:#a6e22e">string&lt;/span> $username,
+&lt;span style="color:#a6e22e">string&lt;/span> $password,
+&lt;span style="color:#a6e22e">string&lt;/span> $email
+) {
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">username&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $username;
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">password&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $password;
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">email&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $email;
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">registeredAt&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">DateTime&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;now&amp;#39;&lt;/span>);
+}
+&lt;span style="color:#75715e">// All the getters here, which use more space
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;span style="color:#75715e">// Then you need to bootstrap your entity manager
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>$paths &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#e6db74">&amp;#34;/path/to/entity-files&amp;#34;&lt;/span>];
+$isDevMode &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">false&lt;/span>;
+$dbParams &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#e6db74">&amp;#39;uri&amp;#39;&lt;/span> &lt;span style="color:#f92672">=&amp;gt;&lt;/span> &lt;span style="color:#e6db74">&amp;#39;mysql://user:pass@host:port/database&amp;#39;&lt;/span>];
+$config &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">Setup&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">createAnnotationMetadataConfiguration&lt;/span>($paths, $isDevMode);
+$entityManager &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">EntityManager&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">create&lt;/span>($dbParams, $config);
+&lt;span style="color:#75715e">// We can then query our objects
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>$user &lt;span style="color:#f92672">=&lt;/span> $entityManager&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">find&lt;/span>(&lt;span style="color:#a6e22e">User&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">class&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;some-id&amp;#39;&lt;/span>);
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Even though the ORM example is not significantly longer in lines, it is more complex for all the jargon and the tooling it introduces. There is a cost to learn how to use an ORM versus how to make SQL queries (supposing the developer already knows how to do the latter).&lt;/p>
+&lt;p>Now, considering that an ORM &lt;strong>does not have&lt;/strong> a significant cost in implementation lines but &lt;strong>it does have&lt;/strong> one in learning/training for its use, and &lt;strong>supposing&lt;/strong> that that usage brings benefits in the long run, then the million dollar question is: &lt;strong>is that cost worth those benefits?&lt;/strong> That&amp;rsquo;s all, really.&lt;/p>
+&lt;p>In order to answer that question we need to come to see those supposed benefits. The only way to do that is comparing it to the other approach in the context of the daily practice of working in a codebase. I like to draw this comparison by pointing to the deficiencies of the array + DAO approach in short statements, and how the object-mapping approach is different, and better.&lt;/p>
+&lt;h2 id="arrays-are-not-reliable-structures-objects-derived-from-classes-are">Arrays are not reliable structures, objects derived from classes are&lt;/h2>
+&lt;p>This is THE problem with arrays in PHP: they are very unreliable data structures by design. In the DAO approach, for example, that array returned from the user data can contain anything (who knows what), can be read by anyone with access to the reference, and modified too, without any kind of constraints.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">
+$user[&amp;#39;id&amp;#39;] = 1;
+$user[&amp;#39;username&amp;#39;] = &amp;#39;Tom&amp;#39;;
+$user[&amp;#39;password&amp;#39;] = &amp;#39;my-hashed-password&amp;#39;;
+// You get the idea...
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>This create a host of problems. There are simply so many things can go wrong using them:&lt;/p>
+&lt;ol>
+&lt;li>What if the hashed password of a user gets dumped in a report by accident?&lt;/li>
+&lt;li>What if suddenly &lt;code>username&lt;/code> is no longer a string but null? How do I know that?&lt;/li>
+&lt;li>What if someone deleted a key that other code depends on because he/she was trying to do something else, like hiding the password, for example?&lt;/li>
+&lt;li>What if I misspelled a key name in a critical production operation?&lt;/li>
+&lt;li>What if I leave the array in a inconsistent state that could affect future computations, like &lt;code>['isAccountActive' =&amp;gt; true, 'deactivationDate' =&amp;gt; '05/24/1988']&lt;/code>?&lt;/li>
+&lt;/ol>
+&lt;p>I could go on forever&amp;hellip;&lt;/p>
+&lt;h2 id="arrays-lead-to-over-tested-code-objects-derived-from-classes-require-less-testing">Arrays lead to over-tested code, objects derived from classes require less testing&lt;/h2>
+&lt;p>You could argue that these problems should be solved by testing the system and its routines, and you are absolutely right. This, however, assumes that the developer does test the codebase, which is not always true in my own observations of reality. Nonetheless, being generous, I can concede that.&lt;/p>
+&lt;p>The main problem here is over-testing. Since your language has features to automatically prevent all the kind of undesirable state mutations that I pointed out, but you are not using them, you end up writing more tests than you should, because now you have to check for invalid state mutations in every routine. This leads, instead of unit testing or spec testing, to case-per-case testing, which is a very expensive way to test. It is expensive because it is really hard to set up, and also because it is very easy to break those tests.&lt;/p>
+&lt;p>&lt;strong>If you don&amp;rsquo;t want to have problems working with arrays, you have to test your system extensively, adding big costs to the development effort.&lt;/strong>&lt;/p>
+&lt;p>Or, you could use defined classes with protected state, and allow to read only what is necessary, specifying return types and only allowing valid state mutations by providing a good api to client classes. Did I mention you can write comments in its methods too, as means of documentation?&lt;/p>
+&lt;h2 id="arrays-are-not-new-developers-friendly-objects-derived-from-classes-are">Arrays are not new-developers friendly, objects derived from classes are&lt;/h2>
+&lt;p>Even when you can get away with testing your codebase extensively to use arrays (which I highly doubt), another problem is that, if I&amp;rsquo;m not the main developer of the application or I am not familiar with the system in any way, I&amp;rsquo;m going to have a really hard time working with those arrays if I ever need to fix something. I&amp;rsquo;ll spend hours dumping and debugging what an array exactly contains at any given point in the code, instead of actually solving a problem. I might even try to do that again and again with different inputs. All that is time consuming, and the hourly rate of a developer is not quite cheap to be honest.&lt;/p>
+&lt;p>How much easier would be for me to jump in to the development effort aided by a good designed class and my favorite IDE&amp;rsquo;s autocomplete and go-to features? Oh, I see that the method &lt;code>getDeactivationDate&lt;/code> can return an instance of DateTime or null. I can work with that!&lt;/p>
+&lt;p>&lt;strong>In the long run, using objects reduces development costs by allowing other developers reasoning about the codebase faster.&lt;/strong>&lt;/p>
+&lt;p>You could make the point, however, that this is easily solvable by documenting the structure of arrays in some form of specification. Again, that does not make them not changeable and suddenly trustworthy, but at least is a start. But, can you see the irony? You &lt;strong>need&lt;/strong> a spec, and that is exactly what a class is: is an specification, a structure, a contract, a blueprint. The only difference is that is not optional, it is enforced by the language. And better yet, does not live in an obscure word document stored somewhere else, but in your codebase. I don&amp;rsquo;t know about you, but that makes a pretty good spec for me.&lt;/p>
+&lt;p>I guarantee you: the time that could be spent writing that documentation specification is more than writing the class itself. Why don&amp;rsquo;t make the class the spec then?&lt;/p>
+&lt;h2 id="arrays-are-anemic-objects-derived-from-classes-are-rich">Arrays are anemic, objects derived from classes are rich&lt;/h2>
+&lt;p>Arrays are bags of data with no more meaning that the one you remember from when you were working on the code for the last time. But the things we are doing with our software are full of meaning: we are storing users, login them in, adding or removing permissions. We are managing reservations, scheduling meetings, sending emails, transferring cargo, selling goods, you name it! Surely we are missing something when we try to do that moving around bags of uncertain data.&lt;/p>
+&lt;p>Having a &lt;code>User&lt;/code> class with a &lt;code>login&lt;/code> method sounds pretty straightforward to me. So it does a &lt;code>Cargo&lt;/code> class with a &lt;code>transfer&lt;/code> method, or a &lt;code>Order&lt;/code> class with a &lt;code>pay&lt;/code> one. I can easily figure out what is going on there. This is what is so cool about objects: state and behavior live together in one place, because in our stateful world, they should!&lt;/p>
+&lt;p>However, arrays cannot contain any behavior associated with them. So if you want to repeat a routine over a similar structure of data, you have to rewrite that routine somewhere else, which in turn leads to bloated client code. This is the difference between an anemic data model (one that contains just plain data) and a rich one (one that has the data, but also is full of behavior). The latter serves client code better by means of &lt;a href="https://martinfowler.com/bliki/TellDontAsk.html">Telling-Not-Asking&lt;/a>.&lt;/p>
+&lt;p>To be fair, you can always create a function to perform a common task over an array. But again, that function needs to operate over an array with a very special structure, not any array. And we have seen how easy is to break them. Why separate then that apparent natural association between the data and the actions that can occur over that data?&lt;/p>
+&lt;p>&lt;strong>But, in summary, using objects helps to encapsulate logic that otherwise would be repetitive, and would lead to bloated client code.&lt;/strong>&lt;/p>
+&lt;h2 id="arrays-cannot-benefit-of-ide-tooling-objects-can">Arrays cannot benefit of IDE tooling, objects can&lt;/h2>
+&lt;p>Arrays don&amp;rsquo;t offer autocompletion when working with them, likes objects do. I&amp;rsquo;ve sort of mentioned this in the past, but not as explicitly. Autocompletion is a powerful IDE feature that aids the developer and saves him/her from wasting time in silly mistakes.&lt;/p>
+&lt;p>Also, arrays are hard to refactor. If you rename a key, you have to track all the uses of that key in your code and change it to the new one. Working with objects and with an appropriate IDE you can refactor a method name in an instant.&lt;/p>
+&lt;p>&lt;strong>So again, using objects aids development by means of saving time and improving naming conventions when necessary.&lt;/strong>&lt;/p>
+&lt;h2 id="arrays-and-daos-do-not-scale-as-well-as-objects-and-repositories-do">Arrays and DAOs do not scale as well as Objects and Repositories do&lt;/h2>
+&lt;p>Queries in DAOS can really grow wild and complex. It&amp;rsquo;s impossible not to have a combinatorial explosion of method names without using some sort of query builder. Also, is even hard to switch between different SQL implementations, like Sqlite, MySQL, Postgres or even Oracle. This increases maintenance time when dealing with changes of schema or implementing new methods.&lt;/p>
+&lt;p>ORMs abstract away all these details and create some sort of a protection layer between vendors by choosing a subset of their functionality. This is how, at the end of the day, abstraction works: it has the benefits of being consistent, but with a limited subset of functionality. They have excellent query building capabilities already backed into their engines, so we don&amp;rsquo;t have to reinvent the wheel.&lt;/p>
+&lt;p>This makes ORM scale better in terms of maintainability. Abstracting away all those details helps us focus on writing code rather than worrying about queries. Here the maxim applies more than in any other place: the simpler solution grows complex when the problem grows too. The complex solution costs more up front, but scales better when the problem gets complicated.&lt;/p>
+&lt;h2 id="conclusion">Conclusion&lt;/h2>
+&lt;p>These are probably the main reasons why I think working with objects derived of well designed classes is always going to be better than working with other unreliable data structures. Again, costs more up front (and not so much if you have appropriate tooling like PHP Storm), but the benefits on the long run are huge.&lt;/p>
+&lt;p>And if these reasons don&amp;rsquo;t convince you, maybe just like a look at the recent trend. Languages historically known to be simpler and flexible adopting more complex and stricter features. That&amp;rsquo;s got to say something, isn&amp;rsquo;t it?&lt;/p></content></item><item><title>Repository Pattern Done Right</title><link>https://mnavarro.dev/posts/repository-pattern-done-right/</link><pubDate>Mon, 17 Feb 2020 20:00:00 -0300</pubDate><guid>https://mnavarro.dev/posts/repository-pattern-done-right/</guid><description>The repository pattern is one of the most well established patterns in Domain Driven Design. It&amp;rsquo;s origins can be traced as early as when Object Oriented Programing was born.
+Of course, like it happens with almost every pattern or tool, you can really use it terribly the first time (or even the second, or the third one). The only way to improve upon that is good literature and seeing other, more appropriate, uses of the pattern/tool.</description><content>&lt;p>The repository pattern is one of the most well established patterns in Domain Driven Design. It&amp;rsquo;s origins can be traced as early as when Object Oriented Programing was born.&lt;/p>
+&lt;p>Of course, like it happens with almost every pattern or tool, you can really use it terribly the first time (or even the second, or the third one). The only way to improve upon that is good literature and seeing other, more appropriate, uses of the pattern/tool. Refining your use of tools and patterns this way is, with almost all certainty, the only way to grow as a developer. Years of experience don&amp;rsquo;t count much if you have been doing the same thing, the same way, over and over again.&lt;/p>
+&lt;p>This is why I implement and use repositories very differently now than the first time I started. This is probably because of the experience (both good and bad) that I&amp;rsquo;ve accumulated over the years. I&amp;rsquo;ve also read quite a lot on the topic, and certainly I&amp;rsquo;m not the only one that has experienced issues implementing repositories in my applications.&lt;/p>
+&lt;p>So, with the years, I&amp;rsquo;ve come to a definition of repositories, and is this one:&lt;/p>
+&lt;blockquote>
+&lt;p>Repositories are an specific and immutable abstraction over a collection of domain objects.&lt;/p>
+&lt;p>~ Matías Navarro Carter&lt;/p>
+&lt;/blockquote>
+&lt;p>Let me tell you what I mean by that.&lt;/p>
+&lt;h2 id="warning-active-record-users">Warning: Active Record Users&lt;/h2>
+&lt;p>Repositories tend to work with ORMs &amp;ndash; even though is not a requirement, it&amp;rsquo;s very common practice. However, not any kind of ORM can be used for working with repositories. I think a word of warning is necessary for users of Active Record ORMs (I&amp;rsquo;m talking about you, Yii and Laravel users). I&amp;rsquo;ve read several blog posts (like &lt;a href="https://dev.to/asperbrothers/laravel-repository-pattern-how-to-use-why-it-matters-1g9d">this one&lt;/a>, or &lt;a href="https://itnext.io/repository-design-pattern-done-right-in-laravel-d177b5fa75d4">this other one&lt;/a>) that promise an implementation of repositories the Laravel Way™, which is really not the repository pattern, but a poorly abstracted interface over Eloquent. Don&amp;rsquo;t get me wrong: Active Record ORMs are good on what they do, they just don&amp;rsquo;t fit the requirements for the repository pattern. Don&amp;rsquo;t try to use Active Record ORMs for repositories: they just don&amp;rsquo;t fit the use case. Embrace Active Record: you already made the choice of coupling your data model to your persistence layer. If you won&amp;rsquo;t take my word for it, &lt;a href="https://laravelpodcast.com/episodes/9dafa72e?t=34m3s">take Jeffrey Way&amp;rsquo;s&lt;/a>.&lt;/p>
+&lt;h2 id="repositories-are-abstractions">Repositories are Abstractions&lt;/h2>
+&lt;p>Just to continue with the thread, the main reason why Active Record ORMs don&amp;rsquo;t fit the repository pattern is because &lt;strong>repositories are abstractions&lt;/strong>, and Active Record Data Models are not. When you create a data model in Laravel, for example, you are not fetching a &lt;em>pure&lt;/em> data class, but a whole lot of other stuff related to persistence, like your database connections, mutators and all sorts of stuff. All that lives in your data model, and that renders it unusable for the level of abstraction required for the repository pattern.&lt;/p>
+&lt;p>To be fair with the Eloquent guys, this is true of Doctrine repositories also. If you are using doctrine repositories &lt;em>as they are&lt;/em>, you are not abstracting anything away. You are coupled to Doctrine, which is in turn coupled to a relational database engine. That leaves you in the same place as using Eloquent (a bit better though, because your data model is a &lt;em>pure&lt;/em> data class).&lt;/p>
+&lt;p>In the Symfony world, it&amp;rsquo;s common to see something like this:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">SomeController&lt;/span>
+{
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">someMethod&lt;/span>(&lt;span style="color:#a6e22e">Request&lt;/span> $request)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Response&lt;/span>
+{
+&lt;span style="color:#75715e">// This repository is the doctrine&amp;#39;s library one
+&lt;/span>&lt;span style="color:#75715e">&lt;/span> $repo &lt;span style="color:#f92672">=&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">getRepository&lt;/span>(&lt;span style="color:#a6e22e">User&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">class&lt;/span>);
+$users &lt;span style="color:#f92672">=&lt;/span> $repo&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">findAll&lt;/span>();
+&lt;span style="color:#66d9ef">return&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">json&lt;/span>($users);
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>If you do this, stop. You are not using a &lt;strong>proper&lt;/strong> abstraction here. It&amp;rsquo;s true: the Doctrine repository is an abstraction over the &lt;code>EntityManager&lt;/code>, &lt;code>QueryBuilder&lt;/code>, &lt;code>Connection&lt;/code> and a bunch of other stuff: but is a doctrine-specific abstraction. You need a &lt;strong>Domain-specific abstraction&lt;/strong>. One abstraction that is only yours, your own contract.&lt;/p>
+&lt;p>So what we should do then? We just define an interface:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">User&lt;/span>
+{
+&lt;span style="color:#75715e">// This is your data class
+&lt;/span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;span style="color:#66d9ef">interface&lt;/span> &lt;span style="color:#a6e22e">UserRepository&lt;/span>
+{
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @return iterable|User[]
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">all&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">iterable&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">add&lt;/span>(&lt;span style="color:#a6e22e">User&lt;/span> $user)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">void&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">remove&lt;/span>(&lt;span style="color:#a6e22e">User&lt;/span> $user)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">void&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">ofId&lt;/span>(&lt;span style="color:#a6e22e">string&lt;/span> $userId)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">?&lt;/span>&lt;span style="color:#a6e22e">User&lt;/span>;
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>This is a proper abstraction. Your &lt;code>User&lt;/code> class is a class that just contains data. Your &lt;code>UserRepository&lt;/code> interface is your contract. You can use the Doctrine repository behind it, but it won&amp;rsquo;t matter this time, because you will type hint the interface to all other classes using it. This way you effectively decouple yourself of any persistence library/engine and get an abstraction you can use all around your codebase.&lt;/p>
+&lt;h2 id="repositories-are-specific">Repositories are Specific&lt;/h2>
+&lt;p>Note how the &lt;code>UserRepository&lt;/code> we defined is &lt;strong>model specific&lt;/strong>. A lot of people like to save work by creating a generic repository, that becomes no more than a query abstraction over the persistence library used. Just don&amp;rsquo;t do this:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">interface&lt;/span> &lt;span style="color:#a6e22e">Repository&lt;/span>
+{
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @return iterable|object[]
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">all&lt;/span>(&lt;span style="color:#a6e22e">string&lt;/span> $repositoryClass)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">iterable&lt;/span>;
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Remember one of the principles of DDD: clear language intent. One repository interface for each model conveys more meaning to that specific repository/model than a generic one. For example: only users can be filtered by email, not buildings.&lt;/p>
+&lt;p>Besides with one generic repository for everything, you won&amp;rsquo;t be able to type your concrete model classes to the return or argument types. It&amp;rsquo;s the longer route, but is definitely the most convenient and flexible.&lt;/p>
+&lt;h2 id="repositories-are-collections">Repositories are Collections&lt;/h2>
+&lt;p>I would say that the &amp;ldquo;Aha!&amp;rdquo; moment in repositories for me is when I realized that they are just an abstraction over a collection of objects. This blew my mind and gave me a new challenge; the challenge of implement repositories as if they were an in-memory collection.&lt;/p>
+&lt;p>For starters, I dumped all methods like &lt;code>all()&lt;/code>, &lt;code>allActiveUsers()&lt;/code> or &lt;code>allActiveUsersOfThisMonth()&lt;/code>. If you have read the two famous posts about taming repositories, first the one of &lt;a href="http://drafts.easybib.com/post/44139111915/taiming-repository-classes-in-doctrine-with-the">Anne at Easybib&lt;/a> and then the one of &lt;a href="https://beberlei.de/2013/03/04/doctrine_repositories.html">Benjamin Eberlei in response&lt;/a>, you should know that methods like that in a repository can really grow wild. Also, you don&amp;rsquo;t need all the complexity of the specification pattern: we can do better and simpler than that.&lt;/p>
+&lt;p>Collections apis have many distinctive features: the possibility of slice them, filter them, and add or remove new items to them as well as getting individual items. But we don&amp;rsquo;t want a general collection api, remember? We want to implement a specific api for every model, so it conveys meaning.&lt;/p>
+&lt;p>So, our &lt;code>UserRepository&lt;/code> interface could look this way:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">interface&lt;/span> &lt;span style="color:#a6e22e">UserRepository&lt;/span> &lt;span style="color:#66d9ef">extends&lt;/span> &lt;span style="color:#a6e22e">Countable&lt;/span>, &lt;span style="color:#a6e22e">IteratorAggregate&lt;/span>
+{
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">add&lt;/span>(&lt;span style="color:#a6e22e">User&lt;/span> $user)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">void&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">remove&lt;/span>(&lt;span style="color:#a6e22e">User&lt;/span> $user)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">void&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">ofId&lt;/span>(&lt;span style="color:#a6e22e">string&lt;/span> $userId)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">?&lt;/span>&lt;span style="color:#a6e22e">User&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">ofEmail&lt;/span>(&lt;span style="color:#a6e22e">string&lt;/span> $email)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">?&lt;/span>&lt;span style="color:#a6e22e">User&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">withActiveStatus&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">self&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">registeredAfter&lt;/span>(&lt;span style="color:#a6e22e">DateTimeInterface&lt;/span> $date)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">self&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">registeredBefore&lt;/span>(&lt;span style="color:#a6e22e">DateTimeInterface&lt;/span> $date)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">self&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">getIterator&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Iterator&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">slice&lt;/span>(&lt;span style="color:#a6e22e">int&lt;/span> $start, &lt;span style="color:#a6e22e">int&lt;/span> $size &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">20&lt;/span>)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">self&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">count&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">int&lt;/span>;
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Pay special attention to the last three methods. These are the only methods that could potentially be in a &lt;code>Repository&lt;/code> base interface, because all of them will be sliceable, countable and iterable.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">interface&lt;/span> &lt;span style="color:#a6e22e">Repository&lt;/span> &lt;span style="color:#66d9ef">extends&lt;/span> &lt;span style="color:#a6e22e">IteratorAggregate&lt;/span>, &lt;span style="color:#a6e22e">Countable&lt;/span>
+{
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">getIterator&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Iterator&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">slice&lt;/span>(&lt;span style="color:#a6e22e">int&lt;/span> $start, &lt;span style="color:#a6e22e">int&lt;/span> $size &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">20&lt;/span>)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">self&lt;/span>;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">count&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">int&lt;/span>;
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>So by doing this, all of your repositories will be sliceable (think pagination there), iterable and countable. The idea is that you apply the filtering methods (all the methods that return &lt;code>self&lt;/code>) and then iterate to execute the internal query ¡just like an in-memory collection! In fact, you wouldn&amp;rsquo;t note the difference at all if an implementation is switched to another one.&lt;/p>
+&lt;p>This is good OOP. All the persistence details are completely hidden from us, the api is composable and fits our needs for a repository. It looks neat and using it is really simple and easy to understand:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">SomeService&lt;/span>
+{
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __construct(&lt;span style="color:#a6e22e">UserRepository&lt;/span> $users)
+{
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">users&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $users;
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">someMethod&lt;/span>()
+{
+$users &lt;span style="color:#f92672">=&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">users&lt;/span>
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">withActiveStatus&lt;/span>()
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">registeredBefore&lt;/span>(&lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">DateTime&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;now&amp;#39;&lt;/span>))
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">registeredAfter&lt;/span>(&lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">DateTime&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;-30days&amp;#39;&lt;/span>));
+$count &lt;span style="color:#f92672">=&lt;/span> $users&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">count&lt;/span>();
+&lt;span style="color:#66d9ef">return&lt;/span> $users;
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>But here&amp;rsquo;s the question: how do we go about implementing an api like this? If you are a good observer, you might have realized that the filters return an instance of themselves, modifying the internal state of the repository. So in a next query, we will have the filters of the previous query applied, right?&lt;/p>
+&lt;h2 id="repositories-are-immutable">Repositories are Immutable&lt;/h2>
+&lt;p>Well, that could be right, if we really are modifying the internal state. But in reality, we are cloning the reference of the repository, so we never touch the original one. This is an implementation detail, but a very important one. If we change, let&amp;rsquo;s say, the state of the repository reference that lives inside our DI Container, then we are done: we cannot use that reference again. So the idea is to make it &lt;strong>immutable&lt;/strong>.&lt;/p>
+&lt;p>Let me show you the final api, implemented in Doctrine ORM. I&amp;rsquo;m going to write some comments and docblocks in the code explaining some things.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">declare&lt;/span>(&lt;span style="color:#a6e22e">strict_types&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;span style="color:#66d9ef">namespace&lt;/span> &lt;span style="color:#a6e22e">RepositoryExample\Common&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">Doctrine\ORM\EntityManagerInterface&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">Doctrine\ORM\QueryBuilder&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">Doctrine\ORM\Tools\Pagination\Paginator&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">Iterator&lt;/span>;
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * Class DoctrineORMRepository
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> * This is a custom abstract Doctrine ORM repository. It is meant to be extended by
+&lt;/span>&lt;span style="color:#e6db74"> * every Doctrine ORM repository existing in your project.
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> * The main features and differences with the EntityRepository provided by Doctrine is
+&lt;/span>&lt;span style="color:#e6db74"> * that this one implements our repository contract in an immutable way.
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">abstract&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">DoctrineORMRepository&lt;/span> &lt;span style="color:#66d9ef">implements&lt;/span> &lt;span style="color:#a6e22e">Repository&lt;/span>
+{
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * This is Doctrine&amp;#39;s Entity Manager. It&amp;#39;s fine to expose it to the child class.
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> * @var EntityManagerInterface
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">protected&lt;/span> $manager;
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * We don&amp;#39;t want to expose the query builder to child classes.
+&lt;/span>&lt;span style="color:#e6db74"> * This is so we are sure the original reference is not modified.
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> * We control the query builder state by providing clones with the `query`
+&lt;/span>&lt;span style="color:#e6db74"> * method and by cloning it with the `filter` method.
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> * @var QueryBuilder
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">private&lt;/span> $queryBuilder;
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * DoctrineORMRepository constructor.
+&lt;/span>&lt;span style="color:#e6db74"> * @param EntityManagerInterface $manager
+&lt;/span>&lt;span style="color:#e6db74"> * @param string $entityClass
+&lt;/span>&lt;span style="color:#e6db74"> * @param string $alias
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __construct(&lt;span style="color:#a6e22e">EntityManagerInterface&lt;/span> $manager, &lt;span style="color:#a6e22e">string&lt;/span> $entityClass, &lt;span style="color:#a6e22e">string&lt;/span> $alias)
+{
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">manager&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $manager;
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">queryBuilder&lt;/span> &lt;span style="color:#f92672">=&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">manager&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">createQueryBuilder&lt;/span>()
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">select&lt;/span>($alias)
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">from&lt;/span>($entityClass, $alias);
+}
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @inheritDoc
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">getIterator&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Iterator&lt;/span>
+{
+&lt;span style="color:#66d9ef">yield&lt;/span> &lt;span style="color:#a6e22e">from&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">Paginator&lt;/span>($this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">queryBuilder&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">getQuery&lt;/span>());
+}
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @inheritDoc
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">slice&lt;/span>(&lt;span style="color:#a6e22e">int&lt;/span> $start, &lt;span style="color:#a6e22e">int&lt;/span> $size &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">20&lt;/span>)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Repository&lt;/span>
+{
+&lt;span style="color:#66d9ef">return&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">filter&lt;/span>(&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> (&lt;span style="color:#a6e22e">QueryBuilder&lt;/span> $qb) &lt;span style="color:#66d9ef">use&lt;/span> ($start, $size) {
+$qb&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">setFirstResult&lt;/span>($start)&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">setMaxResults&lt;/span>($size);
+});
+}
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @inheritDoc
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">count&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">int&lt;/span>
+{
+$paginator &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">Paginator&lt;/span>($this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">queryBuilder&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">getQuery&lt;/span>());
+&lt;span style="color:#66d9ef">return&lt;/span> $paginator&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">count&lt;/span>();
+}
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * Filters the repository using the query builder
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> * It clones it and returns a new instance with the modified
+&lt;/span>&lt;span style="color:#e6db74"> * query builder, so the original reference is preserved.
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> * @param callable $filter
+&lt;/span>&lt;span style="color:#e6db74"> * @return $this
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">protected&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">filter&lt;/span>(&lt;span style="color:#a6e22e">callable&lt;/span> $filter)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">self&lt;/span>
+{
+$cloned &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">clone&lt;/span> $this;
+$filter($cloned&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">queryBuilder&lt;/span>);
+&lt;span style="color:#66d9ef">return&lt;/span> $cloned;
+}
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * Returns a cloned instance of the query builder
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> * Use this to perform single result queries.
+&lt;/span>&lt;span style="color:#e6db74"> *
+&lt;/span>&lt;span style="color:#e6db74"> * @return QueryBuilder
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">protected&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">query&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">QueryBuilder&lt;/span>
+{
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">clone&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">queryBuilder&lt;/span>;
+}
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * We allow cloning only from this scope.
+&lt;/span>&lt;span style="color:#e6db74"> * Also, we clone the query builder always.
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">protected&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __clone()
+{
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">queryBuilder&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">clone&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">queryBuilder&lt;/span>;
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>That was the abstract repository. Note how we don&amp;rsquo;t expose the &lt;code>QueryBuilder&lt;/code>. This is because it&amp;rsquo;s dangerous: an inexperienced developer could apply filters to it and mutate the original reference, causing a massive bug. Instad, we provide two convenience methods for child classes, &lt;code>filter&lt;/code> and &lt;code>query&lt;/code>. The first one takes a callable which in turn takes a cloned instance of the &lt;code>QueryBuilder&lt;/code> as an argument. The second one just returns a cloned &lt;code>QueryBuilder&lt;/code> so the child class can query anything.&lt;/p>
+&lt;p>Then, we use that api in our &lt;code>UserRepository&lt;/code> and implement the remaining methods.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">declare&lt;/span>(&lt;span style="color:#a6e22e">strict_types&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>);
+&lt;span style="color:#66d9ef">namespace&lt;/span> &lt;span style="color:#a6e22e">RepositoryExample\User&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">DateTime&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">Doctrine\DBAL\Types\Types&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">Doctrine\ORM\EntityManagerInterface&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">Doctrine\ORM\NonUniqueResultException&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">Doctrine\ORM\NoResultException&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">Doctrine\ORM\QueryBuilder&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">DomainException&lt;/span>;
+&lt;span style="color:#66d9ef">use&lt;/span> &lt;span style="color:#a6e22e">RepositoryExample\Common\DoctrineORMRepository&lt;/span>;
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * Class DoctrineORMUserRepository
+&lt;/span>&lt;span style="color:#e6db74"> * @package RepositoryExample\User
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">final&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">DoctrineORMUserRepository&lt;/span> &lt;span style="color:#66d9ef">extends&lt;/span> &lt;span style="color:#a6e22e">DoctrineORMRepository&lt;/span> &lt;span style="color:#66d9ef">implements&lt;/span> &lt;span style="color:#a6e22e">UserRepository&lt;/span>
+{
+&lt;span style="color:#66d9ef">protected&lt;/span> &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">ENTITY_CLASS&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">User&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">class&lt;/span>;
+&lt;span style="color:#66d9ef">protected&lt;/span> &lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#66d9ef">ALIAS&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;user&amp;#39;&lt;/span>;
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * DoctrineORMUserRepository constructor.
+&lt;/span>&lt;span style="color:#e6db74"> * @param EntityManagerInterface $manager
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> __construct(&lt;span style="color:#a6e22e">EntityManagerInterface&lt;/span> $manager)
+{
+&lt;span style="color:#66d9ef">parent&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">__construct&lt;/span>($manager, &lt;span style="color:#a6e22e">self&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">ENTITY_CLASS&lt;/span>, &lt;span style="color:#a6e22e">self&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">ALIAS&lt;/span>);
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">add&lt;/span>(&lt;span style="color:#a6e22e">User&lt;/span> $user)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">void&lt;/span>
+{
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">manager&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">persist&lt;/span>($user);
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">remove&lt;/span>(&lt;span style="color:#a6e22e">User&lt;/span> $user)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">void&lt;/span>
+{
+$this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">manager&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">remove&lt;/span>($user);
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">ofId&lt;/span>(&lt;span style="color:#a6e22e">string&lt;/span> $id)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">?&lt;/span>&lt;span style="color:#a6e22e">User&lt;/span>
+{
+$object &lt;span style="color:#f92672">=&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">manager&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">find&lt;/span>(&lt;span style="color:#a6e22e">self&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">ENTITY_CLASS&lt;/span>, $id);
+&lt;span style="color:#66d9ef">if&lt;/span> ($object &lt;span style="color:#a6e22e">instanceof&lt;/span> &lt;span style="color:#a6e22e">User&lt;/span>) {
+&lt;span style="color:#66d9ef">return&lt;/span> $object;
+}
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">null&lt;/span>;
+}
+&lt;span style="color:#e6db74">/**
+&lt;/span>&lt;span style="color:#e6db74"> * @param string $email
+&lt;/span>&lt;span style="color:#e6db74"> * @return User|null
+&lt;/span>&lt;span style="color:#e6db74"> */&lt;/span>
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">ofEmail&lt;/span>(&lt;span style="color:#a6e22e">string&lt;/span> $email)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">?&lt;/span>&lt;span style="color:#a6e22e">User&lt;/span>
+{
+&lt;span style="color:#66d9ef">try&lt;/span> {
+$object &lt;span style="color:#f92672">=&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">query&lt;/span>()
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">where&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;user.email = :email&amp;#39;&lt;/span>)
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">setParameter&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;email&amp;#39;&lt;/span>, $email)
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">getQuery&lt;/span>()&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">getSingleResult&lt;/span>();
+} &lt;span style="color:#66d9ef">catch&lt;/span> (&lt;span style="color:#a6e22e">NoResultException&lt;/span> $e) {
+&lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">null&lt;/span>;
+} &lt;span style="color:#66d9ef">catch&lt;/span> (&lt;span style="color:#a6e22e">NonUniqueResultException&lt;/span> $e) {
+&lt;span style="color:#66d9ef">throw&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">DomainException&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;More than one result found&amp;#39;&lt;/span>);
+}
+&lt;span style="color:#66d9ef">return&lt;/span> $object;
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">withActiveStatus&lt;/span>()&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">UserRepository&lt;/span>
+{
+&lt;span style="color:#66d9ef">return&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">filter&lt;/span>(&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> (&lt;span style="color:#a6e22e">QueryBuilder&lt;/span> $qb) {
+$qb&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">where&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;user.active = true&amp;#39;&lt;/span>);
+});
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">registeredBefore&lt;/span>(&lt;span style="color:#a6e22e">DateTime&lt;/span> $time)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">UserRepository&lt;/span>
+{
+&lt;span style="color:#66d9ef">return&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">filter&lt;/span>(&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> (&lt;span style="color:#a6e22e">QueryBuilder&lt;/span> $qb) &lt;span style="color:#66d9ef">use&lt;/span> ($time) {
+$qb&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">where&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;user.registeredAt &amp;lt; :before&amp;#39;&lt;/span>)
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">setParameter&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;:before&amp;#39;&lt;/span>, $time, &lt;span style="color:#a6e22e">Types&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">DATETIME_MUTABLE&lt;/span>);
+});
+}
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">registeredAfter&lt;/span>(&lt;span style="color:#a6e22e">DateTime&lt;/span> $time)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">UserRepository&lt;/span>
+{
+&lt;span style="color:#66d9ef">return&lt;/span> $this&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">filter&lt;/span>(&lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> (&lt;span style="color:#a6e22e">QueryBuilder&lt;/span> $qb) &lt;span style="color:#66d9ef">use&lt;/span> ($time) {
+$qb&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">where&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;user.registeredAt &amp;gt; :after&amp;#39;&lt;/span>)
+&lt;span style="color:#f92672">-&amp;gt;&lt;/span>&lt;span style="color:#a6e22e">setParameter&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;:after&amp;#39;&lt;/span>, $time, &lt;span style="color:#a6e22e">Types&lt;/span>&lt;span style="color:#f92672">::&lt;/span>&lt;span style="color:#a6e22e">DATETIME_MUTABLE&lt;/span>);
+});
+}
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>The result is really nice to work with. I&amp;rsquo;ve taken this approach is several projects so far and it feels great. The method names convey meaning and work well. Creating different implementations like a Doctrine Mongo ODM, Filesystem or In-Memory it&amp;rsquo;s trivial. Implementors just need to take into account the immutability aspect of it, but that&amp;rsquo;s all really.&lt;/p>
+&lt;p>I really hope you like this approach as much as I do and start using it in your projects.&lt;/p></content></item></channel></rss>

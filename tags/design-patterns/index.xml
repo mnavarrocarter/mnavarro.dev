@@ -1,2 +1,199 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Design Patterns on</title><link>https://mnavarro.dev/tags/design-patterns/</link><description>Recent content in Design Patterns on</description><generator>Hugo -- gohugo.io</generator><language>en-GB</language><lastBuildDate>Sun, 26 Sep 2021 20:00:00 +0100</lastBuildDate><atom:link href="https://mnavarro.dev/tags/design-patterns/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golden Rule for Writing Code</title><link>https://mnavarro.dev/posts/golden-rule-code/</link><pubDate>Sun, 26 Sep 2021 20:00:00 +0100</pubDate><guid>https://mnavarro.dev/posts/golden-rule-code/</guid><description>Every now and then I read a piece about DRY vs WET, explaining their benefits over its counterpart. Most of the time, these pieces are quite unhelpful, as they are way too vague and general. They lack a crucial thing, and that is context.
-I believe this is the most common aspect on disagreements about any topic in software development. Someone writes a piece about X or Y topic arguing a point, but then another piece comes up arguing a different case (or sometimes totally the opposite one).</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Design Patterns on The Chilean Nerd</title><link>https://mnavarro.dev/tags/design-patterns/</link><description>Recent content in Design Patterns on The Chilean Nerd</description><generator>Hugo -- gohugo.io</generator><language>en-GB</language><copyright>©2019 Matias Navarro Carter. CC-BY-SA.</copyright><lastBuildDate>Sun, 26 Sep 2021 20:00:00 +0100</lastBuildDate><atom:link href="https://mnavarro.dev/tags/design-patterns/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golden Rule for Writing Code</title><link>https://mnavarro.dev/posts/golden-rule-code/</link><pubDate>Sun, 26 Sep 2021 20:00:00 +0100</pubDate><guid>https://mnavarro.dev/posts/golden-rule-code/</guid><description>Every now and then I read a piece about DRY vs WET, explaining their benefits over its counterpart. Most of the time, these pieces are quite unhelpful, as they are way too vague and general. They lack a crucial thing, and that is context.
+I believe this is the most common aspect on disagreements about any topic in software development. Someone writes a piece about X or Y topic arguing a point, but then another piece comes up arguing a different case (or sometimes totally the opposite one).</description><content>&lt;p>Every now and then I read a piece about &lt;a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY&lt;/a> vs &lt;a href="https://dev.to/nettab/we-should-all-be-writing-wet-code-3d95">WET&lt;/a>, explaining their benefits
+over its counterpart. Most of the time, these pieces are quite unhelpful, as
+they are way too vague and general. They lack a crucial thing, and that
+is &lt;strong>context&lt;/strong>.&lt;/p>
+&lt;p>I believe this is the most common aspect on disagreements about any topic in
+software development. Someone writes a piece about X or Y topic arguing a point,
+but then another piece comes up arguing a different case (or sometimes totally
+the opposite one). Almost always both authors are presenting valuable and correct
+ideas, but their conclusions are different. Why?&lt;/p>
+&lt;p>I believe this is due to a lack of context, and this happens a lot in the DRY and WET
+discussions.&lt;/p>
+&lt;p>For instance, I read &lt;a href="https://kentcdodds.com/blog/aha-programming?s=09">this article&lt;/a> that poses yet-another paradigm for dealing
+with the problem of when to abstract.&lt;/p>
+&lt;p>You should absolutely read it. Basically, the author summarized DRY, it&amp;rsquo;s benefits
+and problems. Then it summarizes WET&amp;rsquo;s benefits and problems. And then goes on
+to present it&amp;rsquo;s own acronymic alternative: AHA.&lt;/p>
+&lt;p>So, this is the state of the art now in the debate (I&amp;rsquo;m intentionally reducing the
+author&amp;rsquo;s ideas to a few words here):&lt;/p>
+&lt;ol>
+&lt;li>Someone proposed DRY: We should avoid repeated or duplicated code by abstracting it out.&lt;/li>
+&lt;li>Someone proposed WET in reaction: We should wait until the duplication is real. People abstract too early.&lt;/li>
+&lt;li>Someone proposed AHA in response: Even when there is real duplication, you don&amp;rsquo;t know the future. We should wait for the right abstraction.&lt;/li>
+&lt;/ol>
+&lt;p>That&amp;rsquo;s it, in a nutshell. But all this is not helpful at all. There are a lot of
+questions left unanswered. Does DRY means I can have no duplicated code at all?
+Is all duplication bad? When is it too early to abstract? How can I know when is
+the right time to abstract something away?&lt;/p>
+&lt;p>Articles don&amp;rsquo;t answer that question, because they can&amp;rsquo;t. And they can&amp;rsquo;t because
+the answer is &amp;ldquo;it depends&amp;rdquo;. Depends of your own particular codebase and problem,
+and the context surrounding it. Your problem cannot be reduced to an easy-to-remember
+acronym created by a guy who is not dealing with your particular issue.&lt;/p>
+&lt;p>Proof of this is this wild declaration made by the author of the AHA article. It says
+this when it summarizes his approach:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>I think the big takeaway&lt;/strong> about &amp;ldquo;AHA Programming&amp;rdquo; is that you shouldn&amp;rsquo;t be dogmatic
+about when you start writing abstractions but instead write the abstraction when
+it &lt;em>feels&lt;/em> right and don&amp;rsquo;t be afraid to duplicate code until you get there.&lt;/p>
+&lt;/blockquote>
+&lt;p>That is some terrible advice. The points he raised in his article were all valid,
+but the conclusion is just plain terrible. In an attempt to escape from dogmatism
+(which is always good), the solution to the problem ends up being reduced to a
+mere feeling.&lt;/p>
+&lt;p>When does it &lt;em>feel&lt;/em> right to code an abstraction? I don&amp;rsquo;t know, even though in
+some of my projects I could have an idea. But most certainly, someone will feel
+different.&lt;/p>
+&lt;p>I think we need a bit more objective advice on how to do this.&lt;/p>
+&lt;h1 id="going-back-to-the-roots">Going Back to the Roots&lt;/h1>
+&lt;p>DRY as an acronym was coined with a purpose. A purpose most people seem to ignore.
+Why DRY is good? Because if you have to correct or fix duplicated code in the future,
+it will be harder to do, because you will have to change it in the multiple places it was copied.
+Why is WET or AHA good? Because if you choose the wrong abstraction and then need to change it, it will be harder
+to do so in the future.&lt;/p>
+&lt;p>For me, there is just only one rule to follow when writing code. Is not an easy one:
+most of the time you&amp;rsquo;ll have to figure out the answer and some times you&amp;rsquo;ll get
+it wrong. The application of this rule can take many forms and faces, and so it
+will require you to be wise. Here it is:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Should requirements change in way X, could this code Y be easily changed?&lt;/strong>&lt;/p>
+&lt;/blockquote>
+&lt;p>That&amp;rsquo;s it. There you have it. That is all you need to know for starters. From
+that rule, every software principle, every design pattern, every acronym flows.&lt;/p>
+&lt;p>Of course, like every summarized thing, this rule needs explaining. Let me
+break it down in pieces.&lt;/p>
+&lt;h2 id="should-requirements-change">&amp;ldquo;Should requirements change&amp;rdquo;&lt;/h2>
+&lt;p>This is kinda obvious. Code changes all the time because of requirements.
+Code is never finished because of requirements. If you have ever done client work
+you should know this very well.&lt;/p>
+&lt;p>In every software project where changes happen, you must be prepared for them. This
+requires you to anticipate. Anticipation is one of the most important qualities
+of a seasoned developer.&lt;/p>
+&lt;p>I&amp;rsquo;m currently learning how to drive and my instructor keeps telling me I&amp;rsquo;m missing
+a very important skill: anticipation. I need to look ahead and be prepared for
+possible things that may occur. I need to look at the signs that could cause me
+to stop or do another manuever, all the time. He keeps telling me what he has
+come to call the golden rule of driving: &lt;strong>we drive not for what is happening, but
+for what &lt;em>could&lt;/em> happen.&lt;/strong> I&amp;rsquo;m just borrowing his wisdom here.&lt;/p>
+&lt;p>Coding is not much different in that aspect. When coding, &lt;strong>we are not coding just for what we
+are asked, but what we &lt;em>could&lt;/em> be asked.&lt;/strong> We need to be aware and read the signs,
+and that just takes experience.&lt;/p>
+&lt;p>If you are in a project in which requirements don&amp;rsquo;t change much or where you are
+in full control of them, then none of this applies to you.&lt;/p>
+&lt;h2 id="in-ways-x">&amp;ldquo;in ways X&amp;rdquo;&lt;/h2>
+&lt;p>If you read the rule well, you&amp;rsquo;ll notice there are two variables: X and Y. This
+is the first one of them.&lt;/p>
+&lt;p>I represented the change using a variable because we do not know in which ways
+the requirements will change. This seems to contradict my previous point, but it
+does not. Let me explain.&lt;/p>
+&lt;p>One thing is to try to anticipate, another very different one is to know in
+advance. Some people confuse the two of them and they say: &amp;ldquo;Since I cannot know
+in advance, it is pointless to anticipate&amp;rdquo;. They couldn&amp;rsquo;t be more wrong.&lt;/p>
+&lt;p>Only God knows in advance, we agree on that. The purpose of anticipation is not
+knowing, is preparing. We read signs of things that might happen so we can be
+prepared if they happen. We don&amp;rsquo;t know if they will, but the key verb here is to be
+prepared.&lt;/p>
+&lt;p>You don&amp;rsquo;t know if you are going to lose your job, but nonetheless you try to be
+prepared for that by saving up every month. Not knowing in advance does not rule
+out being prepared for something unexpected.&lt;/p>
+&lt;p>Now, here is when you are pretty much on your own, and when context is key. Only
+you know in which ways requirements may change. It could be that they ask you
+to use another database engine, or support multiple methods of authentication,
+or be able to configure certain parts on the system on demand. It could be anything,
+but you must always be looking out for the signs.&lt;/p>
+&lt;p>Usually, when requirements are confusing since the beginning of a project, that&amp;rsquo;s
+a very good indication for me when things might change.&lt;/p>
+&lt;h2 id="could-this-code-y">&amp;ldquo;could this code Y&amp;rdquo;&lt;/h2>
+&lt;p>So, the second variable subject here is not only the changing requirements, but
+the code you are working on that could possibly be impacted by that change of
+requirements.&lt;/p>
+&lt;p>For instance, if a requirement is to convert files to PDF, that is a very good
+indication that whatever code you are using to do that, should be properly isolated
+so it is easy to change. PDF conversion tools abound out there, and it might happen
+that you&amp;rsquo;ll need to change one for another.&lt;/p>
+&lt;p>For most if these kinds of problems you can get away by coding to an interface.
+Define an interface in your application and implement it. The interface should
+be small and generic: pass just the enough arguments required to do the conversion.&lt;/p>
+&lt;p>Then, have your code use the interface. You can be sure it will be easy to change
+in the future.&lt;/p>
+&lt;p>Again, this is a very particular example, but it has a very wide application. Interfaces
+are the best way to protect your code from changes. If you design them well,
+you will have an easy time swapping the implementation for something else.&lt;/p>
+&lt;p>Bottom line, you and you only know your code. Be wise.&lt;/p>
+&lt;h2 id="be-easily-changed">&amp;ldquo;be easily changed&amp;rdquo;&lt;/h2>
+&lt;p>Now, if the rule were only &amp;ldquo;Should requirements change in way X, could this code
+Y be changed&amp;rdquo; that would be a terrible rule. The word &lt;strong>easily&lt;/strong> is key.&lt;/p>
+&lt;p>Maybe you come to the conclusion that a potential requirement X could make your
+code Y change, so you want to refactor. But the impact is not that big so
+leaving it unchanged would still make it easy to refactor should that requirement
+X become a reality in the future. In that case, don&amp;rsquo;t change it.&lt;/p>
+&lt;p>You should only refactor code when the potential of a requirement change will make
+it hard to change. Sometimes, changes are not that hard. If a piece of code is
+duplicated in two places, that is not that hard to change.&lt;/p>
+&lt;p>Remember, the goal is that we want code that is not hard to change.&lt;/p>
+&lt;h1 id="on-picking-the-wrong-abstraction">On Picking the Wrong Abstraction&lt;/h1>
+&lt;p>Sometimes, people talk about picking the wrong abstraction early as the worst mistake
+you can possibly do.&lt;/p>
+&lt;p>I&amp;rsquo;ve done this so many times, and it is not that terrible at all and quite
+simple to correct. I have many stories about this.&lt;/p>
+&lt;p>I once coded an interface for money conversion in a project I was doing.
+It was very simple. It was called &lt;code>MoneyConverter&lt;/code> and has one method
+&lt;code>Convert&lt;/code>. It took a &lt;code>Money&lt;/code> instance and a currency as arguments and returned a
+new &lt;code>Money&lt;/code> instance with the converted amount.&lt;/p>
+&lt;p>I implemented that using an external api, but that does not matter. This is how
+the interface looked:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">interface&lt;/span> &lt;span style="color:#a6e22e">MoneyConverter&lt;/span>
+{
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">convert&lt;/span>(&lt;span style="color:#a6e22e">Money&lt;/span> $money, &lt;span style="color:#a6e22e">Currency&lt;/span> $currency)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Money&lt;/span>;
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>My client code just used that. Never knew anything about an api or any other implementation
+detail.&lt;/p>
+&lt;p>It was a good idea until someone said &amp;ldquo;We need to display to the user the conversion
+rate in which the conversion was made.&amp;rdquo; Too bad for me, my interface did not
+returned that information: it just returned the converted amount. So, I modified
+the interface&amp;rsquo;s return argument to be another object called &lt;code>Conversion&lt;/code> that was
+holding two things inside: the &lt;code>Money&lt;/code> class and the &lt;code>rate&lt;/code>.&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-php" data-lang="php">&lt;span style="color:#75715e">&amp;lt;?php&lt;/span>
+&lt;span style="color:#66d9ef">interface&lt;/span> &lt;span style="color:#a6e22e">MoneyConverter&lt;/span>
+{
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">function&lt;/span> &lt;span style="color:#a6e22e">convert&lt;/span>(&lt;span style="color:#a6e22e">Money&lt;/span> $money, &lt;span style="color:#a6e22e">Currency&lt;/span> $currency)&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#a6e22e">Conversion&lt;/span>;
+}
+&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Conversion&lt;/span>
+{
+&lt;span style="color:#75715e">// Original properties were not public. This is just to save space.
+&lt;/span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#a6e22e">Money&lt;/span> $money;
+&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#a6e22e">float&lt;/span> $rate;
+}
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>Now, I had to update every part of the code where the &lt;code>MoneyConverter&lt;/code> interface
+was used (around two or three places) so they were handling correctly the
+returned value and then I had to correct the implementation.&lt;/p>
+&lt;p>Now, two questions.&lt;/p>
+&lt;p>First one is, could I have anticipated to the requirement? Absolutely! It seemed
+something very reasonable to ask and expect. If I ever write a conversion service
+again it will always expose this information by default.&lt;/p>
+&lt;p>Second is, was it a hard change? For me in this project, it wasn&amp;rsquo;t. And I think
+here it is where all the fears of coming up with the wrong abstraction come from. It
+was very easy for me to spot all the places where I had to change this because
+I had all the code using the interface covered with tests, as well as the
+implementation using the Api. As soon as I changed the interface and the
+implementation, my tests exploded, showing me exactly where and why were failing.
+Either myself or any other developer could have made the change, because of the
+robust test suite.&lt;/p>
+&lt;p>The reason why maybe coming up with the wrong abstraction is such a fear, is because
+people don&amp;rsquo;t write tests. And tests are essential into making a piece of software
+easy to change. Tests are not so much for ensuring correctness of a program: they
+exist to help you confidently change your code.&lt;/p>
+&lt;p>You &lt;strong>will&lt;/strong> make wrong decisions when writing code, and sometimes that &lt;strong>will&lt;/strong>
+lead to disruptive changes. Be prepared for that with a good test suite. Again,
+it&amp;rsquo;s all about being prepared.&lt;/p>
+&lt;h1 id="conclusion">Conclusion&lt;/h1>
+&lt;p>Much of the coding best practices and design patterns out there have the sole goal
+to make your code easy to maintain by ensuring it is easy to change when it needs
+changing. This is the most important aspect you must keep in mind when writing code,
+more than how many times you copy code or if you &lt;em>feel&lt;/em> it is right to abstract something
+or not.&lt;/p>
+&lt;p>Will this be easy to change is the most important question you can ask yourself
+about your code, and only wisdom, experience and good judgement can help you
+answer it. Making sure it is easy to change by coding well (DRY, WET, AHA, Design Patterns)
+and writing tests is crucial.&lt;/p></content></item></channel></rss>

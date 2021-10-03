@@ -2,7 +2,6 @@ baseurl = "https://mnavarro.dev/"
 languageCode = "en-GB"
 metaDataFormat = "yaml"
 DefaultContentLanguage = "en"
-theme = "terminal"
 paginate = 5
 
 [params]

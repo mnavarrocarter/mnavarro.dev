@@ -1,4 +1,4 @@
-baseurl = "https://mnavarro.dev/"
+baseurl = "https://blog.mnavarro.dev/"
 languageCode = "en-GB"
 metaDataFormat = "yaml"
 DefaultContentLanguage = "en"

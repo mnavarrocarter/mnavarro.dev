@@ -1,0 +1,135 @@
+<!doctype html><html lang=en><head><title>Taming Incidental Complexity in Software Development :: The Chilean Nerd</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Software development is a complex trade. Layers of abstraction, tooling, patterns, tradeoffs, dependencies, people, are some of the reasons behind hard things in Software development. But there is also a big source of complexity: ourselves and our poor choices.
+Incidental complexity is the technical term for this kind of complexity. It is defined as anything in software that is hard but really does not need to be. It&amp;rsquo;s when we shoot ourselves in the foot and make our lives harder for no reason."><meta name=keywords content="chilean,blog,programming,matias,navarro,carter,php,programming,golang"><meta name=robots content="noodp"><link rel=canonical href=https://blog.mnavarro.dev/posts/taming-incidental-complexity/><link rel=stylesheet href=https://blog.mnavarro.dev/assets/style.css><link rel=stylesheet href=https://blog.mnavarro.dev/assets/blue.css><link rel=apple-touch-icon href=https://blog.mnavarro.dev/img/apple-touch-icon-192x192.png><link rel="shortcut icon" href=https://blog.mnavarro.dev/img/favicon/blue.png><meta name=twitter:card content="summary"><meta name=twitter:site content="mnavarrocarter"><meta name=twitter:creator content><meta property="og:locale" content="en"><meta property="og:type" content="article"><meta property="og:title" content="Taming Incidental Complexity in Software Development"><meta property="og:description" content="Software development is a complex trade. Layers of abstraction, tooling, patterns, tradeoffs, dependencies, people, are some of the reasons behind hard things in Software development. But there is also a big source of complexity: ourselves and our poor choices.
+Incidental complexity is the technical term for this kind of complexity. It is defined as anything in software that is hard but really does not need to be. It&amp;rsquo;s when we shoot ourselves in the foot and make our lives harder for no reason."><meta property="og:url" content="https://blog.mnavarro.dev/posts/taming-incidental-complexity/"><meta property="og:site_name" content="The Chilean Nerd"><meta property="og:image" content="https://blog.mnavarro.dev/img/favicon/blue.png"><meta property="og:image:width" content="2048"><meta property="og:image:height" content="1024"><meta property="article:section" content="Tech"><meta property="article:published_time" content="2021-05-10 17:00:00 +0100 +0100"></head><body class=blue><div class="container center headings--one-size"><header class=header><div class=header__inner><div class=header__logo><a href=/><div class=logo>The Chilean Nerd</div></a></div><div class=menu-trigger>menu</div></div><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/showcase>Showcase</a></li><li><a href=https://github.com/mnavarrocarter>Github</a></li><li><a href=/about>About</a></li><div class=spacer></div><ul class=language-selector><ul class=language-selector-current><li>English ▾</li></ul><ul class="language-selector__more hidden"><li><a href=https://blog.mnavarro.dev/>English</a></li><li><a href=https://blog.mnavarro.dev/es/>Español</a></li></ul></ul></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/showcase>Showcase</a></li><li><a href=https://github.com/mnavarrocarter>Github</a></li><li><a href=/about>About</a></li><hr><li><a href=https://blog.mnavarro.dev/>English</a></li><li><a href=https://blog.mnavarro.dev/es/>Español</a></li></ul></nav></header><div class=content><div class=post><h1 class=post-title><a href=https://blog.mnavarro.dev/posts/taming-incidental-complexity/>Taming Incidental Complexity in Software Development</a></h1><div class=post-meta><span class=post-date>2021-05-10</span></div><span class=post-tags>#<a href=https://blog.mnavarro.dev/tags/complexity/>Complexity</a>&nbsp;
+#<a href=https://blog.mnavarro.dev/tags/software-development/>Software Development</a>&nbsp;</span><div class=post-content><div><p>Software development is a complex trade. Layers of abstraction, tooling, patterns,
+tradeoffs, dependencies, people, are some of the reasons behind hard things in
+Software development. But there is also a big source of complexity: ourselves
+and our poor choices.</p><p>Incidental complexity is the technical term for this kind of complexity. It is
+defined as anything in software that is hard but really does not need to be. It&rsquo;s
+when we shoot ourselves in the foot and make our lives harder for no reason.</p><p>Almost every single project or company out there has some degree of incidental
+complexity in it. I&rsquo;ve seen plenty of it myself and also caused a good deal of it too.
+I&rsquo;ve analyzed it and try to understand its sources by talking to people, asking
+questions and seeking to understand the historical developments behind a system
+or company.</p><p>After some study, I have come up with some suggestions to avoid shooting ourselves
+in the foot regarding making things complex.</p><h2 id=avoid-coupling>Avoid Coupling<a href=#avoid-coupling class=hanchor arialabel=Anchor>&#8983;</a></h2><p>Almost every single mess of a system finds itself in that state of messyness due
+to coupling. Coupling, in my opinion, is the most dangerous thing in Software
+Development. It&rsquo;s like a camouflaged predator waiting to strike his prey: you
+never see it until is too late.</p><p>Part of the reason why we don&rsquo;t see it, is because coupling is not a bad thing in
+and of itself. What I mean by this is that coupling two things together is not a
+sufficient requirement for disaster. It is a necessary one, of course, but not
+enough by itself. The missing ingredient in the mix is <em>change</em>. Coupling
+only shows his nasty face when one of the things that have been coupled changes.</p><p>This makes identifying coupling something rather tricky, and you don&rsquo;t usually
+realize you are making a mistake until something is hard to change. And it may be
+that even when that happens, you rationalize it by blaming it to some other external
+factor (&ldquo;Oh the client keeps changing the requirements&rdquo;). But truth is that we
+have brought that upon ourselves by making our software hard to change.</p><p>When you are building something, at all times you need to ask yourself the
+question: &ldquo;Is this coupled to something?&rdquo; and if it is, &ldquo;Is this thing likely to
+change?", and it if is, &ldquo;How costly would it be to change it?&rdquo; Those are some
+of the most important questions you can ask yourself when you are building something.</p><p>Wether you couple your application to a particular database engine (I&rsquo;m talking
+of you, Active Record), or couple your code by using inheritance instead of
+composition, or couple your suite of microservices using REST instead of an
+event driven approach, you are going to have a hard time when things have to change.
+And if things change, you will pay the price of that change. There is no escape.</p><p>Systems do not need to be coupled. It is mostly our naiveness and inexperience
+that causes a system to be a tangled, hard to change mess. Keep an eye on what
+is coupled to what and have measures in place to remedy or mitigate the impact
+of a change.</p><h2 id=avoid-over-engineering>Avoid Over-Engineering<a href=#avoid-over-engineering class=hanchor arialabel=Anchor>&#8983;</a></h2><p>Over engineering is the habit of solving a problem with more engineering than
+necessary to solve it. In other words, when a simpler approach would have been
+possible to solve a problem but instead a more complex way is preferred.</p><p>This is particularly true of code generation tools. There is a lot of value in
+generating boilerplate code, don&rsquo;t get me wrong. But this is usually what an IDE
+is for. In my experience, there have been very few times in which I have felt
+the burden of writing a class by hand. True, it would have been nice to been
+able to autogenerate code from a spec or something in that moment, but that feeling
+quickly evaporates when I remember that autogenerated code is often opinionated,
+ugly and outdated.</p><p>As a side note, I think that abstraction over code generation is a better
+approach to solve the problem of writing less code. Metaprogramming is an excellent
+approach for these kinds of problems. Although one can argue that writing code
+that leverages metaprogramming is inherently complex, the end result ends
+up being a simpler api surface. So yeah, it is hard to do, but easy to use! I would
+say that is exactly the goal. Code generation tooling is hard to write, and not
+as easy to use (both the tool to generate the code and the generated code itself).</p><p>But, there is a world of difference in considering to autogenerate code for a
+massive api than when you have to do it for a really small one. I still remember
+the frustration I experienced when I was forced to setup autogeneration for all
+the models of an integration I was building, even when many of them had two fields
+at most! It took me more time to setup all the autogeneration fluff than it would
+have taken me to write the models by hand. But well, the policy in that project
+was to do it that way.</p><p>When there is a simpler way of achieving the same end result, go that route. Don&rsquo;t
+try to get clever just for the sake of it. Yeah, sounds pretty cool to write your
+own routing library for this project, but, do you really need to do that?</p><p>Testing is another source of over-engineering. People build these stateful mock
+servers because apparently they need to test third party apis using the HTTP protocol, as
+if someone would not have tested that already. In memory mocks are much simpler
+and don&rsquo;t cause you the pain of setting up extra dependencies every time you want
+to test your application.</p><p>Simplicity is a rare jewel these days, not just because it is hard to find, but because
+sometimes it disguises itself as its shallow cousin: convenience. But simplicity tends
+to be found there where pragmatism trumps dogmatism. Make sure you are focused
+on practical stuff when solving a problem, and no over theorizing it and trying
+to justify complex approaches based on remote possibilities.</p><h2 id=avoid-centralizing>Avoid Centralizing<a href=#avoid-centralizing class=hanchor arialabel=Anchor>&#8983;</a></h2><p>Organizations and systems evolve over time, and grow more and more complex. This
+is natural and expected. What is not natural or expected is that, sometimes,
+we want to tame that growing complexity (that is, make it easier to manage) by
+use some form of centralized solution.</p><p>The problem with centralized solutions, especially in distributed systems or
+companies, is that by claiming a global benefit, they cause specific harm.
+Centralized solutions remove autonomy and create friction. They operate by
+removing the control of something from the subsystem or department where its
+function is defined, takes place and evolves, toward some central place that
+blurs the particulars. This dramatically impacts further development of the
+thing of which control has ben surrendered.</p><p>Take software documentation, for instance. Companies choose to centralize
+documentation in a single place (a company Wiki or something else) usually
+do so by building a narrative of the benefit of having all knowledged in a
+cental place of convenient <em>access</em>, but at the cost of affecting the <em>writing</em>
+of the documentation itself. Often times, due to the distance between the
+owner of the documentation (the code repository) and the central Wiki, these former
+ends up being completely outdated and seldom used.</p><p>There are other ways in which centralizing is extremely dangerous. The central
+part becomes critical and a potential single point of failure or trouble. This
+happens with a central database used by many microservices services, or a central
+service where every business action has to go check something before anything
+else happens (think of centralized access control platforms).</p><p>I think that as long as this central thing is disposable or invisible, then it
+is a good central thing. In other words, when the central thing is not the source
+of truth because the truth originated somewhere else. Think about git, for instance.
+It has a central repository that everyone uses to coordinate, but the changes
+and the work happen in your local machine and then you push them, causing that
+at least one person has always an up to date copy of what is in the central
+repository.</p><p>Same thing with documentation. If we need a place to solve the problem of
+information visibility, then let&rsquo;s solve only that problem. What prevents us
+from having an automated process push the documentation of a repository
+to this central wiki, instead of writing it in a separate place? The problem is not
+the writing of the documentation, so why that has to change? The real problem
+is the visibility of it: let&rsquo;s make it visible, without removing ownership (More
+about this in the next topic).</p><p>When centralizing something, make it work as a repository. Not as the source
+of truth (this is, change), but as the place where all the changes made elsewhere
+go. Every technology that has any sort of centralized repository works this way:
+docker, composer, npm, git. Changes happen next to their source, and then they
+are published for the rest of the world.</p><p>If you make the repository the place where things change, then you are going to
+have a hard time keeping it in sync with the actual thing that changes. Synching
+is an added pain that you don&rsquo;t need to bear. It is incidental complexity.</p><h2 id=avoid-solving-pseudo-problems>Avoid Solving Pseudo-Problems<a href=#avoid-solving-pseudo-problems class=hanchor arialabel=Anchor>&#8983;</a></h2><p>I call pseudo-problems to problems that are not clearly stated. You see, most of
+what people call problems are just a preferred approach over a small friction that
+usually touches the real problem but it does not address it completely.</p><p>Take this centralized wiki as an example. If the problem is access to the
+information, then solve just that problem. If you force everyone to write documentation
+far from the system that documents, it&rsquo;s going to cause another problem.</p><p>Problems need to be clearly stated before solved. Otherwise you might be solving
+the wrong problem, or even worse, apparently solving the problem but causing
+others in the process.</p><p>This is too familiar a story, and it is such a painful one. An organization
+has a monolith that is coupled, hard to change, buggy, hard to make sense of, all
+the possible bad things that can happen with a monolithic system. Then someone
+comes and say &ldquo;We need to split this into microservices&rdquo;, and then they proceed
+to break the components of such monolith into different REST apis. So, say that
+it was an e-commerce application. Now we have an orders service, a customers service,
+a fulfillment service, a payment service, and so on.</p><p>Nice! Every microservice responsibility is now clearly delineated. I would say
+that is a win, right?</p><p>Well, if you think about it, maybe not. What was the initial problem? Was that
+the responsibilities of the monolith were not clearly defined? Maybe. Was it
+the main problem? I don&rsquo;t think so.</p><p>When software is hard to change, it is usually due to coupling. Back to point one
+here. Did they solved the coupling? I don&rsquo;t think so. Now services are coupled via
+a network protocol (and not an in-memory routine), changes are less transparent (different
+teams work on different services now) and changing one service would impact the
+other in ways that are harder to spot (now we rely more in logging). I would
+argue that this left them in a worse place, as managing changes across teams and
+distributed deployable units is harder than in a traditional in-memory application.</p><p>The solution should have really been refactoring the initial application slowly
+to take care of the technical debt that made it hard to change and reason about.</p><p>This happens way too often, and with many things. People throw tech at problems, not
+engineering. As a result, they think they solved a problem when what they really
+did is just go around it and create some more in the process.</p><p>The only way I&rsquo;ve found to fight this insanity is to refuse to solve a problem
+until it is clearly stated and demonstrated it is a problem and why. Only then
+a reasonable discussion about potential solutions and their benefits and
+drawbacks can happen. Solving the wrong problem is one of the worst sources
+of incidental complexity.</p><h2 id=conclusion>Conclusion<a href=#conclusion class=hanchor arialabel=Anchor>&#8983;</a></h2><p>Well there you have it. Another of those rants. Hopefully it saves you
+a trouble or two.</p></div></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button previous"><a href=https://blog.mnavarro.dev/posts/advice-junior-project-saboteurs/><span class=button__icon>←</span>
+<span class=button__text>Advice for junior project saboteurs</span></a></span>
+<span class="button next"><a href=https://blog.mnavarro.dev/posts/semantic-http-count-endpoints/><span class=button__text>Implementing count endpoints using semantic HTTP</span>
+<span class=button__icon>→</span></a></span></div></div></div></div><footer class=footer><div class=footer__inner><div class="copyright copyright--user"><span>©2019 Matias Navarro Carter. CC-BY-SA.</span>
+<span>:: Theme made by <a href=https://twitter.com/panr>panr</a></span></div></div></footer><script src=https://blog.mnavarro.dev/assets/main.js></script><script src=https://blog.mnavarro.dev/assets/prism.js></script><script src=https://blog.mnavarro.dev/assets/languageSelector.js></script></div></body></html>

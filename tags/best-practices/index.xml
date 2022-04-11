@@ -1,4 +1,89 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Best Practices on The Chilean Nerd</title><link>https://blog.mnavarro.dev/tags/best-practices/</link><description>Recent content in Best Practices on The Chilean Nerd</description><generator>Hugo -- gohugo.io</generator><language>en-GB</language><copyright>©2019 Matias Navarro Carter. CC-BY-SA.</copyright><lastBuildDate>Sun, 26 Sep 2021 20:00:00 +0100</lastBuildDate><atom:link href="https://blog.mnavarro.dev/tags/best-practices/index.xml" rel="self" type="application/rss+xml"/><item><title>The Golden Rule for Writing Code</title><link>https://blog.mnavarro.dev/posts/golden-rule-code/</link><pubDate>Sun, 26 Sep 2021 20:00:00 +0100</pubDate><guid>https://blog.mnavarro.dev/posts/golden-rule-code/</guid><description>Every now and then I read a piece about DRY vs WET, explaining their benefits over its counterpart. Most of the time, these pieces are quite unhelpful, as they are way too vague and general. They lack a crucial thing, and that is context.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Best Practices on The Chilean Nerd</title><link>https://blog.mnavarro.dev/tags/best-practices/</link><description>Recent content in Best Practices on The Chilean Nerd</description><generator>Hugo -- gohugo.io</generator><language>en-GB</language><copyright>©2019 Matias Navarro Carter. CC-BY-SA.</copyright><lastBuildDate>Mon, 11 Apr 2022 18:00:00 +0100</lastBuildDate><atom:link href="https://blog.mnavarro.dev/tags/best-practices/index.xml" rel="self" type="application/rss+xml"/><item><title>The Problem with Soft Deletes</title><link>https://blog.mnavarro.dev/posts/problem-with-soft-delete/</link><pubDate>Mon, 11 Apr 2022 18:00:00 +0100</pubDate><guid>https://blog.mnavarro.dev/posts/problem-with-soft-delete/</guid><description>If you have been in web development for a while you might have stumbled upon the concept of soft-deletes. Basically, it is a common pattern (or more exactly, anti-pattern) in database management that allows deleting items from a database while keeping the records there.
+The implementation of this pattern usually involves a nullable timestamp column called deleted_at. When we delete a record, instead of a DELETE query we just simply run an UPDATE one and set that column to the current timestamp.</description><content>&lt;p>If you have been in web development for a while you might have stumbled upon
+the concept of soft-deletes. Basically, it is a common pattern (or more exactly,
+anti-pattern) in database management that allows deleting items from a database
+while keeping the records there.&lt;/p>
+&lt;p>The implementation of this pattern usually involves a nullable timestamp
+column called &lt;code>deleted_at&lt;/code>. When we delete a record, instead of a &lt;code>DELETE&lt;/code>
+query we just simply run an &lt;code>UPDATE&lt;/code> one and set that column to the current
+timestamp. Then, deleted records can be hidden from the exposed public api by
+adding a where clause like the following to every query:&lt;/p>
+&lt;div class="highlight">&lt;pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-sql" data-lang="sql">&lt;span style="color:#66d9ef">WHERE&lt;/span> deleted_at &lt;span style="color:#66d9ef">IS&lt;/span> &lt;span style="color:#66d9ef">NULL&lt;/span>
+&lt;/code>&lt;/pre>&lt;/div>&lt;p>A challenge while implementing this is that this clause must be added globally.
+If you are using raw SQL queries this is hard to maintain and error prone. But most
+frameworks have robust SQL abstractions that eliminate that issue by using
+some plugin or library.&lt;/p>
+&lt;h2 id="benefits--drawbacks">Benefits &amp;amp; Drawbacks&lt;/h2>
+&lt;p>This technique has some benefits, like the ability to restore records that have been
+accidentally removed, keep historical data for reporting purposes and avoid
+dealing with referential constraints when deleting records in relational
+databases. However, in engineering, not all that is shiny is gold. Although there
+are some benefits with this technique, there are also some drawbacks.&lt;/p>
+&lt;p>The first drawback is that there is a performance penalty your database has to
+pay for this. Even if the &lt;code>deleted_at&lt;/code> column is indexed, still a full table scan
+is needed to fetch non-deleted records. This of course harms performance
+exponentially as your database table grows. Some people say this is the most
+fundamental problem with this approach. I think I tend to agree, although the
+impact of that drawback varies from application to application.&lt;/p>
+&lt;p>But, I think there at least two more troubling issues here. One has to do with
+referential integrity and another one with domain modeling.&lt;/p>
+&lt;h3 id="soft-deletes-obscure-referential-integrity">Soft Deletes obscure referential integrity&lt;/h3>
+&lt;p>When you soft delete a record in your database, none of the foreign key constraints
+you have in place will be checked. This is seen as a feature for many. You won&amp;rsquo;t get
+any constraint violation errors on any of your queries. Awesome!&lt;/p>
+&lt;p>The problem is that foreign key constraints are there for a very important reason.
+Bypassing them is often unwise. Let&amp;rsquo;s see a concrete example.&lt;/p>
+&lt;p>Let&amp;rsquo;s think of a &lt;code>articles&lt;/code> table and a &lt;code>tags&lt;/code> table. Articles represent blog
+posts, and you can tag them with any tag you would like. The relationship between
+tags and articles is a many to many one, so you will model this in a &lt;code>article_tags&lt;/code>
+pivot table. Simple.&lt;/p>
+&lt;p>Now let&amp;rsquo;s say you go and delete a tag from the system. You get a massive
+&lt;strong>Constraint Violation Error&lt;/strong> because that tag is being used in the &lt;code>article_tags&lt;/code> table
+to actually tag some articles. You need to do something with those references
+first. Ignoring that kind of problem is never good, because then you could
+have inconsistencies in your data model. You should first correct the references
+in &lt;code>article_tags&lt;/code> and then delete the actual tag.&lt;/p>
+&lt;p>How to correct the references will depend on your use case or domain. For instance,
+when does it make sense to remove a tag? Maybe there is a tag called &lt;strong>DDD&lt;/strong> and another
+called &lt;strong>Domain Driven Design&lt;/strong> in your blog. You want to normalize this, and you
+decide that &lt;strong>DDD&lt;/strong> will be removed and replaced with &lt;strong>Domain Driven Design&lt;/strong>.
+Your delete then should look for the &lt;strong>DDD&lt;/strong> tag in &lt;code>article_tags&lt;/code> and replace
+them with the &lt;strong>Domain Driven Design&lt;/strong> one, and then you proceed to delete the
+&lt;strong>DDD&lt;/strong> tag from the &lt;code>tags&lt;/code> table.&lt;/p>
+&lt;p>Or maybe you just don&amp;rsquo;t want to normalize anything and just delete a tag and all
+of it&amp;rsquo;s references. In that case, you should delete the references first, and then
+the actual tags.&lt;/p>
+&lt;p>It is important that your program has this knowledge baked in itself, because these
+are the concepts that power your domain, which takes us to next topic.&lt;/p>
+&lt;pre>&lt;code>NOTE: Be careful to use Foreign Keys with CASCADE DELETE. They are very convenient,
+but they can massively obscure things and also delete thing you don't want to
+delete. Again, better to have the knowledge backed in your program.
+&lt;/code>&lt;/pre>
+&lt;h3 id="soft-deletes-obscure-businessdomain-logic">Soft Deletes obscure business/domain logic&lt;/h3>
+&lt;p>There are some things in your domain or problem space that will require careful
+consideration when it comes to deletion. For instance, in my current company
+we offer finance to customers based on something we call a Finance Plan. A finance
+plan is just a set of constraints that define the details of a loan (duration, rate,
+minimal payment, etc).&lt;/p>
+&lt;p>Finance plans are then referenced by our applications (these represent credit
+applications from customers).&lt;/p>
+&lt;p>So, natural question. Should we be able to delete finance plans? Not if we have created
+an application with it. Because the finance plan tied to an application now needs
+to be kept for historical reasons. We can go even further? Should we be able to
+modify finance plans? No, because any modification to a finance plan would be really
+a new finance plan. We don&amp;rsquo;t want to be changing the number of months of an already
+approved application, right? If it was approved with 12 months, we can&amp;rsquo;t change that to
+13.&lt;/p>
+&lt;p>Now, what happens when we want to decommission a finance plan? This means, we
+want to prevent it for being displayed so applications cannot use it? We just simply take that
+concept and convert it into a business action, and we add a column on the database
+to track that (&lt;code>decommissioned_at&lt;/code>). This would work very similarly to the soft
+delete column, but now the business action is transparent. It is not a delete,
+it is a decommission. And it is not in every entity, just on those that need it.&lt;/p>
+&lt;p>When we just blindly make everything soft-deletable we obscure these distinctions
+and encourage developers to not think about these and other similar issues. This
+hinders domain modelling, as we are thinking more on a CRUD approach rather that
+a complex domain.&lt;/p></content></item><item><title>The Golden Rule for Writing Code</title><link>https://blog.mnavarro.dev/posts/golden-rule-code/</link><pubDate>Sun, 26 Sep 2021 20:00:00 +0100</pubDate><guid>https://blog.mnavarro.dev/posts/golden-rule-code/</guid><description>Every now and then I read a piece about DRY vs WET, explaining their benefits over its counterpart. Most of the time, these pieces are quite unhelpful, as they are way too vague and general. They lack a crucial thing, and that is context.
 I believe this is the most common aspect on disagreements about any topic in software development. Someone writes a piece about X or Y topic arguing a point, but then another piece comes up arguing a different case (or sometimes totally the opposite one).</description><content>&lt;p>Every now and then I read a piece about &lt;a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY&lt;/a> vs &lt;a href="https://dev.to/nettab/we-should-all-be-writing-wet-code-3d95">WET&lt;/a>, explaining their benefits
 over its counterpart. Most of the time, these pieces are quite unhelpful, as
 they are way too vague and general. They lack a crucial thing, and that

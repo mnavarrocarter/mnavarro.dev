@@ -1,0 +1,70 @@
+<!doctype html><html lang=en><head><title>The Problem with Soft Deletes :: The Chilean Nerd</title><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="If you have been in web development for a while you might have stumbled upon the concept of soft-deletes. Basically, it is a common pattern (or more exactly, anti-pattern) in database management that allows deleting items from a database while keeping the records there.
+The implementation of this pattern usually involves a nullable timestamp column called deleted_at. When we delete a record, instead of a DELETE query we just simply run an UPDATE one and set that column to the current timestamp."><meta name=keywords content="chilean,blog,programming,matias,navarro,carter,php,programming,golang"><meta name=robots content="noodp"><link rel=canonical href=https://blog.mnavarro.dev/posts/problem-with-soft-delete/><link rel=stylesheet href=https://blog.mnavarro.dev/assets/style.css><link rel=stylesheet href=https://blog.mnavarro.dev/assets/blue.css><link rel=apple-touch-icon href=https://blog.mnavarro.dev/img/apple-touch-icon-192x192.png><link rel="shortcut icon" href=https://blog.mnavarro.dev/img/favicon/blue.png><meta name=twitter:card content="summary"><meta name=twitter:site content="mnavarrocarter"><meta name=twitter:creator content><meta property="og:locale" content="en"><meta property="og:type" content="article"><meta property="og:title" content="The Problem with Soft Deletes"><meta property="og:description" content="If you have been in web development for a while you might have stumbled upon the concept of soft-deletes. Basically, it is a common pattern (or more exactly, anti-pattern) in database management that allows deleting items from a database while keeping the records there.
+The implementation of this pattern usually involves a nullable timestamp column called deleted_at. When we delete a record, instead of a DELETE query we just simply run an UPDATE one and set that column to the current timestamp."><meta property="og:url" content="https://blog.mnavarro.dev/posts/problem-with-soft-delete/"><meta property="og:site_name" content="The Chilean Nerd"><meta property="og:image" content="https://blog.mnavarro.dev/img/favicon/blue.png"><meta property="og:image:width" content="2048"><meta property="og:image:height" content="1024"><meta property="article:section" content="Tech"><meta property="article:published_time" content="2022-04-11 18:00:00 +0100 +0100"></head><body class=blue><div class="container center headings--one-size"><header class=header><div class=header__inner><div class=header__logo><a href=/><div class=logo>The Chilean Nerd</div></a></div><div class=menu-trigger>menu</div></div><nav class=menu><ul class="menu__inner menu__inner--desktop"><li><a href=/showcase>Showcase</a></li><li><a href=https://github.com/mnavarrocarter>Github</a></li><li><a href=/about>About</a></li><div class=spacer></div><ul class=language-selector><ul class=language-selector-current><li>English ▾</li></ul><ul class="language-selector__more hidden"><li><a href=https://blog.mnavarro.dev/>English</a></li><li><a href=https://blog.mnavarro.dev/es/>Español</a></li></ul></ul></ul><ul class="menu__inner menu__inner--mobile"><li><a href=/showcase>Showcase</a></li><li><a href=https://github.com/mnavarrocarter>Github</a></li><li><a href=/about>About</a></li><hr><li><a href=https://blog.mnavarro.dev/>English</a></li><li><a href=https://blog.mnavarro.dev/es/>Español</a></li></ul></nav></header><div class=content><div class=post><h1 class=post-title><a href=https://blog.mnavarro.dev/posts/problem-with-soft-delete/>The Problem with Soft Deletes</a></h1><div class=post-meta><span class=post-date>2022-04-11</span></div><span class=post-tags>#<a href=https://blog.mnavarro.dev/tags/best-practices/>Best Practices</a>&nbsp;
+#<a href=https://blog.mnavarro.dev/tags/ddd/>DDD</a>&nbsp;
+#<a href=https://blog.mnavarro.dev/tags/software-development/>Software Development</a>&nbsp;</span><div class=post-content><div><p>If you have been in web development for a while you might have stumbled upon
+the concept of soft-deletes. Basically, it is a common pattern (or more exactly,
+anti-pattern) in database management that allows deleting items from a database
+while keeping the records there.</p><p>The implementation of this pattern usually involves a nullable timestamp
+column called <code>deleted_at</code>. When we delete a record, instead of a <code>DELETE</code>
+query we just simply run an <code>UPDATE</code> one and set that column to the current
+timestamp. Then, deleted records can be hidden from the exposed public api by
+adding a where clause like the following to every query:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#66d9ef>WHERE</span> deleted_at <span style=color:#66d9ef>IS</span> <span style=color:#66d9ef>NULL</span>
+</code></pre></div><p>A challenge while implementing this is that this clause must be added globally.
+If you are using raw SQL queries this is hard to maintain and error prone. But most
+frameworks have robust SQL abstractions that eliminate that issue by using
+some plugin or library.</p><h2 id=benefits--drawbacks>Benefits & Drawbacks<a href=#benefits--drawbacks class=hanchor arialabel=Anchor>&#8983;</a></h2><p>This technique has some benefits, like the ability to restore records that have been
+accidentally removed, keep historical data for reporting purposes and avoid
+dealing with referential constraints when deleting records in relational
+databases. However, in engineering, not all that is shiny is gold. Although there
+are some benefits with this technique, there are also some drawbacks.</p><p>The first drawback is that there is a performance penalty your database has to
+pay for this. Even if the <code>deleted_at</code> column is indexed, still a full table scan
+is needed to fetch non-deleted records. This of course harms performance
+exponentially as your database table grows. Some people say this is the most
+fundamental problem with this approach. I think I tend to agree, although the
+impact of that drawback varies from application to application.</p><p>But, I think there at least two more troubling issues here. One has to do with
+referential integrity and another one with domain modeling.</p><h3 id=soft-deletes-obscure-referential-integrity>Soft Deletes obscure referential integrity<a href=#soft-deletes-obscure-referential-integrity class=hanchor arialabel=Anchor>&#8983;</a></h3><p>When you soft delete a record in your database, none of the foreign key constraints
+you have in place will be checked. This is seen as a feature for many. You won&rsquo;t get
+any constraint violation errors on any of your queries. Awesome!</p><p>The problem is that foreign key constraints are there for a very important reason.
+Bypassing them is often unwise. Let&rsquo;s see a concrete example.</p><p>Let&rsquo;s think of a <code>articles</code> table and a <code>tags</code> table. Articles represent blog
+posts, and you can tag them with any tag you would like. The relationship between
+tags and articles is a many to many one, so you will model this in a <code>article_tags</code>
+pivot table. Simple.</p><p>Now let&rsquo;s say you go and delete a tag from the system. You get a massive
+<strong>Constraint Violation Error</strong> because that tag is being used in the <code>article_tags</code> table
+to actually tag some articles. You need to do something with those references
+first. Ignoring that kind of problem is never good, because then you could
+have inconsistencies in your data model. You should first correct the references
+in <code>article_tags</code> and then delete the actual tag.</p><p>How to correct the references will depend on your use case or domain. For instance,
+when does it make sense to remove a tag? Maybe there is a tag called <strong>DDD</strong> and another
+called <strong>Domain Driven Design</strong> in your blog. You want to normalize this, and you
+decide that <strong>DDD</strong> will be removed and replaced with <strong>Domain Driven Design</strong>.
+Your delete then should look for the <strong>DDD</strong> tag in <code>article_tags</code> and replace
+them with the <strong>Domain Driven Design</strong> one, and then you proceed to delete the
+<strong>DDD</strong> tag from the <code>tags</code> table.</p><p>Or maybe you just don&rsquo;t want to normalize anything and just delete a tag and all
+of it&rsquo;s references. In that case, you should delete the references first, and then
+the actual tags.</p><p>It is important that your program has this knowledge baked in itself, because these
+are the concepts that power your domain, which takes us to next topic.</p><pre><code>NOTE: Be careful to use Foreign Keys with CASCADE DELETE. They are very convenient,
+but they can massively obscure things and also delete thing you don't want to 
+delete. Again, better to have the knowledge backed in your program.
+</code></pre><h3 id=soft-deletes-obscure-businessdomain-logic>Soft Deletes obscure business/domain logic<a href=#soft-deletes-obscure-businessdomain-logic class=hanchor arialabel=Anchor>&#8983;</a></h3><p>There are some things in your domain or problem space that will require careful
+consideration when it comes to deletion. For instance, in my current company
+we offer finance to customers based on something we call a Finance Plan. A finance
+plan is just a set of constraints that define the details of a loan (duration, rate,
+minimal payment, etc).</p><p>Finance plans are then referenced by our applications (these represent credit
+applications from customers).</p><p>So, natural question. Should we be able to delete finance plans? Not if we have created
+an application with it. Because the finance plan tied to an application now needs
+to be kept for historical reasons. We can go even further? Should we be able to
+modify finance plans? No, because any modification to a finance plan would be really
+a new finance plan. We don&rsquo;t want to be changing the number of months of an already
+approved application, right? If it was approved with 12 months, we can&rsquo;t change that to
+13.</p><p>Now, what happens when we want to decommission a finance plan? This means, we
+want to prevent it for being displayed so applications cannot use it? We just simply take that
+concept and convert it into a business action, and we add a column on the database
+to track that (<code>decommissioned_at</code>). This would work very similarly to the soft
+delete column, but now the business action is transparent. It is not a delete,
+it is a decommission. And it is not in every entity, just on those that need it.</p><p>When we just blindly make everything soft-deletable we obscure these distinctions
+and encourage developers to not think about these and other similar issues. This
+hinders domain modelling, as we are thinking more on a CRUD approach rather that
+a complex domain.</p></div></div><div class=pagination><div class=pagination__title><span class=pagination__title-h>Read other posts</span><hr></div><div class=pagination__buttons><span class="button next"><a href=https://blog.mnavarro.dev/posts/taming-incidental-complexity/><span class=button__text>Taming Incidental Complexity in Software Development</span>
+<span class=button__icon>→</span></a></span></div></div></div></div><footer class=footer><div class=footer__inner><div class="copyright copyright--user"><span>©2019 Matias Navarro Carter. CC-BY-SA.</span>
+<span>:: Theme made by <a href=https://twitter.com/panr>panr</a></span></div></div></footer><script src=https://blog.mnavarro.dev/assets/main.js></script><script src=https://blog.mnavarro.dev/assets/prism.js></script><script src=https://blog.mnavarro.dev/assets/languageSelector.js></script></div></body></html>

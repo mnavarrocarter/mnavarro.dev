@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css?family=Poiret+One|Source+Sans+Pro');
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #ecf0f1;
+    background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    width: 100%;
+    height: 100%;
+    max-height: fit-content;
+}
+
+h1,h2 {
+    font-weight: bolder;
+    font-family: 'Poiret One', sans-serif;
+}
+
+main {
+    top: 7em;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 7em;
+}
+
+.profile-photo {
+    display: flex;
+    justify-content: center;
+}
+
+.profile-photo img {
+    height: 9em;
+    width: 9em;
+    border-radius: 50%;
+}
+
+article {
+    padding-top: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    padding-top: 2em;
+}
+
+section {
+    padding-top: 2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+a {
+    font-weight: normal;
+    margin-top: .5em;
+    margin-bottom: .5em;
+    align-self: center;
+    cursor: pointer;
+    background-color: #74c2e9;
+    box-shadow: 0 5px 0 #3e6a80;
+    color: rgba(40,42,54,1);
+    padding: .5em 1em;
+    position: relative;
+    text-decoration: none;
+    width: 60%;
+    max-width: 30em;
+}
+
+a:hover {
+    color: #ffffff;
+    background-color: #3e6a80;
+    font-weight: bolder;
+}
+
+a:active {
+    box-shadow: none;
+    top: 5px;
+}

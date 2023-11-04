@@ -166,3 +166,17 @@ a:hover::before {
     font-style: normal;
     font-weight: 400
 }
+
+@media only screen and (max-width: 600px) {
+    h1 {
+        font-size: large;
+    }
+
+    p {
+        font-size: 1.1em;
+    }
+
+    ul {
+        font-size: 1.1em;
+    }
+}
